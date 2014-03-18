@@ -1,0 +1,82 @@
+# This is an example lift.yaml file.
+# The whole 'example' folder can be used as a functional test suite for lift,
+# provided that you re-define the remotes to an existing target.
+
+# The settings section allow you to define remotes and environment variables.
+# Settings are inherited in the sub-folders of the test suite.
+# You can re-define a setting to override it.
+settings:
+    # The 'define' keyword followed by the remote name
+    define my_remote:
+        host: localhost  # mandatory
+        username: root  # mandatory
+        password: foobar  # optional (if ssh keys are set properly)
+    define my_other_remote:
+        host: localhost
+        username: not_root
+        password: foobar
+    # This environment variables will be transmitted to the test commands
+    # These can be used as a convenient way to pass common settings around
+    environment:
+        MY_ENV_VAR1: foo
+        MY_ENV_VAR2: bar 
+
+# The 'test' keyword followed by the test name
+# This defines a test that will be ran locally
+test ping:
+    command: "ping -c 2 localhost"  # mandatory
+    return code: 0  # optional (default to 0)
+    timeout: 10  # optional (no timeout by default)
+
+test timeout:
+    command: "sleep 10"
+    return code: 124  # This is the expected return code in case of a timeout
+    timeout: 1
+
+test env:
+    # You can use relative path to the lift.yaml file position
+    command: "sh test/test.sh"
+    return code: 0
+    timeout: 2
+    # This environment come on top of the global definition
+    # The actual environment of a test is: inheritance->settings->local
+    environment:
+        MY_VAR: content
+
+# the script expect MY_VAR to be set, but it is not
+test env_fail:
+    command: "sh test/test.sh"
+    return code: 1
+
+
+# A known remote name followed by the 'test' keyword and the test name
+# This define a test that will be ran on my_remote.
+my_remote test remote_ping:
+   # The same fields as local tests can be used (same defaults)
+    command: "ping -c 2 localhost"
+    timeout: 10
+
+my_remote test remote_timeout:
+    command: "ping localhost"
+    return code: 124
+    timeout: 2
+
+my_remote test remote_env_with_resource:
+    command: "sh test/test.sh"
+    return code: 0
+    timeout: 2
+    # Here you can list the files and folders that will be uploaded to the
+    # server before running the test. These will be deleted at the end of
+    # the test. Files are uploaded "flatly" and folders keep their structure.
+    resources:
+        - test/
+    environment:
+        MY_VAR: content
+
+my_remote test remote_env_fail_with_resource:
+    command: "sh test.sh"
+    return code: 1
+    timeout: 2
+    resources:
+        - test/test.sh
+

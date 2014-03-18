@@ -1,0 +1,233 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# LIFT Integration-Functional Testing - High level test framework
+# Copyright © 2014 SmartJog S.A
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+# USA.
+
+
+import os
+import re
+import sys
+
+import yaml
+
+from lift.localtest import LocalTest
+from lift.remotetest import RemoteTest
+from lift.exception import InvalidDescriptionFile
+
+
+def load_config_file(path, remotes={}, environment={}):
+    """Load a test-suite description file
+
+    Parsed remotes and environment are merged with the provided parameters
+    (inheritance).
+    Returns a list of run-able tests and the new remotes and environment dicts.
+    """
+
+    with open(path) as config_file:
+        conf = yaml.load(open(path))
+
+    # Handle empty files
+    if conf is None:
+        conf = {}
+
+    tests = []
+    # load settings
+    if 'settings' in conf:
+        for item in conf['settings']:
+            match = re.match('^define ([a-zA-Z0-9_\-\.]+)$', item)
+            if match:
+                name = match.group(1)
+                if name in ('test', 'define', 'complex', 'settings'):
+                    raise InvalidDescriptionFile('Hosts definition: '
+                                                 '"%s" is a reserved word' % name)
+
+                remotes[name] = conf['settings'][item]
+                # Does the host definition contain all needed fields?
+                if not remotes[name].get('host', None):
+                    raise InvalidDescriptionFile('Missing host in "%s" definition'
+                                                 % name)
+                if not remotes[name].get('username', None):
+                    raise InvalidDescriptionFile('Missing username in "%s" definition'
+                                                 % name)
+                # 'password' is optional, do not look for it
+
+            elif item == 'environment':
+                environment.update(conf['settings']['environment'])
+            else:
+                raise InvalidDescriptionFile('Unknown section in settings: %s'
+                                             % item)
+
+    for section in conf:
+        if section == 'settings':
+            # Already handled
+            continue
+
+        # local test
+        match = re.match('^test ([a-zA-Z0-9_\-\.]+)$', section)
+        if match:
+            # validate items
+            for item in conf[section]:
+                if item not in ('command', 'return code', 'timeout', 'environment'):
+                    raise InvalidDescriptionFile('Unknown section in "%s": %s'
+                                                 % (section, item))
+
+            test_name = match.group(1)
+            for test in tests:
+                if test.name == test_name:
+                    raise InvalidDescriptionFile('Duplicated test: %s' % test_name)
+
+            if 'command' not in conf[section]:
+                raise InvalidDescriptionFile('No command defined for "%s".' % section)
+
+            # Create the test object
+            test = LocalTest(test_name,
+                             conf[section]['command'],
+                             os.path.dirname(path),
+                             conf[section].get('return code', 0),
+                             conf[section].get('timeout', 0),
+                             environment.copy())
+            # Set the test environment
+            test.environment.update(conf[section].get('environment', {}))
+
+            # Add it to the queue
+            tests.append(test)
+            continue
+
+        # Remote test
+        match = re.match('^([a-zA-Z0-9_\-\.]+) test ([a-zA-Z0-9_\-\.]+)$', section)
+        if match:
+
+            remote = match.group(1)
+            if remote not in remotes:
+                raise InvalidDescriptionFile('Unknown remote: %s' % remote)
+
+            # validate items
+            for item in conf[section]:
+                if item not in ('command', 'return code', 'timeout', 'resources', 'environment'):
+                    raise InvalidDescriptionFile('Unknown section in %s: %s'
+                                                 % (section, item))
+
+            test_name = match.group(2)
+            for test in tests:
+                if test.name == test_name:
+                    raise InvalidDescriptionFile('Duplicated test: %s' % test_name)
+
+            if 'command' not in conf[section]:
+                raise InvalidDescriptionFile('No command defined for "%s".' % section)
+
+            # Create the test object
+            test = RemoteTest(test_name,
+                              conf[section]['command'],
+                              remotes[remote],
+                              os.path.dirname(path),
+                              conf[section].get('return code', 0),
+                              conf[section].get('timeout', 0),
+                              environment.copy(),
+                              conf[section].get('resources', []))
+            # Set the test environment
+            test.environment.update(conf[section].get('environment', {}))
+
+            # Add it to the queue
+            tests.append(test)
+            continue
+
+        else:
+            raise InvalidDescriptionFile('Unknown section: %s' % section)
+
+    return tests, remotes, environment
+
+
+if __name__ == '__main__':
+    # Top-level check
+    if not os.path.isfile('lift.yaml'):
+        sys.exit('No lift.yaml file found in this folder.')
+
+    # TODO: option
+    color = True
+
+    # Folder mapping, used for remotes and environment inheritance
+    mapping = []
+
+    for directory, _, _ in os.walk('.'):
+        if not os.path.isfile(os.path.join(directory, 'lift.yaml')):
+            continue
+
+        # Figures out the inheritance of remotes and environments
+
+        # These default will only be used for the root folder (empty mapping)
+        remotes = {}
+        environment = {}
+
+        # inherit from the closer known upper folder
+        for ancestor in reversed(mapping):
+            if not directory.startswith(ancestor['dir']):
+                continue
+            remotes = ancestor['remotes'].copy()
+            environment = ancestor['environment'].copy()
+            break
+
+        # Load the description file
+        try:
+            tests, remotes, environment = load_config_file(os.path.join(directory, 'lift.yaml'),
+                                                           remotes,
+                                                           environment)
+            mapping.append({'dir': directory,
+                            'remotes': remotes,
+                            'environment': environment})
+        except InvalidDescriptionFile as e:
+            sys.exit('%s is not a valid description file: %s'
+                     % (os.path.join(directory, 'lift.yaml'), e))
+
+        for test in tests:
+            try:
+                sys.stdout.write('Running %s/%s...' % (directory, test.name))
+                sys.stdout.flush()
+                status = test.run()
+            except Exception as e:
+                status = False
+                test.stdout = 'An exception was raised during the test execution!'
+                test.stderr = str(e)
+            res_string = '\r%s/%s {0:>{1}}\n' % (directory, test.name)
+            if status:
+                # TODO: align status according to output size
+                if color:
+                    # Green
+                    print(res_string.format('\033[92mOK\033[0m', 89 - len(res_string)))
+                else:
+                    print(res_string.format('OK', 80 - len(res_string)))
+            else:
+                if color:
+                    # Red
+                    print(res_string.format('\033[91mFAIL\033[0m', 89 - len(res_string)))
+                else:
+                    print(res_string.format('FAIL', 80 - len(res_string)))
+
+                if test.stdout:
+                    print('STDOUT:\n%s\n' % test.stdout)
+                if test.stderr:
+                    print('STDERR:\n%s\n' % test.stderr)
+
+# TODO
+# summary at the end
+# - count (success rate)
+# - remind errors
+
+# option --verbose
+# upper inheritance
+# parse tests in order
