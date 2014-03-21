@@ -26,8 +26,8 @@ import sys
 import argparse
 
 import lift
-from lift.loader import load_config_file
 from lift.exception import InvalidDescriptionFile
+from lift.loader import load_config_file, load_upper_inheritance
 
 
 def parse():
@@ -55,18 +55,19 @@ if not os.path.isfile('lift.yaml'):
 
 # Folder mapping, used for remotes and environment inheritance
 mapping = []
+
+# Load remotes/environment from upper level lift.yaml files
+remotes, environment = load_upper_inheritance('.')
+
 tests_count = 0.0
 # Failed tests objects (including sub folders), used for the final summary
 all_failed_tests = []
+
 for directory, _, _ in os.walk('.'):
     if not os.path.isfile(os.path.join(directory, 'lift.yaml')):
         continue
 
     # Figures out the inheritance of remotes and environments
-
-    # These default will only be used for the root folder (empty mapping)
-    remotes = {}
-    environment = {}
 
     # inherit from the closer known upper folder
     for ancestor in reversed(mapping):

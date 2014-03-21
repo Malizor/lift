@@ -41,6 +41,36 @@ yaml.add_representer(OrderedDict, dict_representer)
 yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
                      dict_constructor)
 
+def load_upper_inheritance(directory_path):
+    """Look for and load remotes/environment from upper level lift.yaml files
+
+    Returns remotes and environment to inherit from in directory_path.
+    """
+    remotes = {}
+    environment = {}
+
+    # First, find the higher level lift.yaml file
+    browsed = []
+
+    directory = os.path.realpath(directory_path)
+    parent_directory = os.path.realpath(os.path.join(directory, '..'))
+    while directory != parent_directory:  # not in root dir
+        upper_file = os.path.join(parent_directory, 'lift.yaml')
+        if not os.path.isfile(upper_file):
+            break
+        browsed.insert(0, upper_file)
+        parent_directory = os.path.realpath(os.path.join(parent_directory, '..'))
+
+    # Load configuration from top to bottom
+    for lift_file in browsed:
+        try:
+            _, remotes, environment = load_config_file(lift_file,
+                                                       remotes,
+                                                       environment)
+        except InvalidDescriptionFile as e:
+            sys.exit('%s is not a valid description file: %s' % (lift_file, e))
+
+    return remotes, environment
 
 def load_config_file(path, remotes={}, environment={}):
     """Load a test-suite description file
