@@ -23,15 +23,27 @@
 
 import os
 import sys
+import argparse
 
 import lift
 from lift.loader import load_config_file
 from lift.exception import InvalidDescriptionFile
 
 
+def parse():
+    """Command line argument parsing"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-V', '--version', action='version',
+                        version=lift.version)
+    return parser.parse_args()
+
+
 if __name__ != '__main__':
     sys.exit('The lift binary can only be executed.')
 
+
+# Parse arguments
+args = parse()
 
 # Top-level check
 if not os.path.isfile('lift.yaml'):
