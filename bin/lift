@@ -39,6 +39,9 @@ def parse():
                         help='Disable colored output')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Also print the output of successful tests')
+    parser.add_argument('--no-upper-inheritance', action='store_true',
+                        help='Do not load remotes/environment from upper level'
+                        ' lift.yaml files')
     return parser.parse_args()
 
 
@@ -57,7 +60,11 @@ if not os.path.isfile('lift.yaml'):
 mapping = []
 
 # Load remotes/environment from upper level lift.yaml files
-remotes, environment = load_upper_inheritance('.')
+if not args.no_upper_inheritance:
+    remotes, environment = load_upper_inheritance('.')
+else:
+    remotes = {}
+    environment = {}
 
 tests_count = 0.0
 # Failed tests objects (including sub folders), used for the final summary
