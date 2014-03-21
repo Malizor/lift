@@ -54,6 +54,11 @@ def parse():
                         type=lambda p: is_dir(parser, p), default='.',
                         help='Specify the root folder in which tests will be '
                         'looked for (default to the current working directory)')
+    parser.add_argument('test', nargs='*',
+                        help='Specify individual tests to run. '
+                        'The format to use is the same as the one found in the '
+                        'lift output, ie. "FOLDER/TEST_NAME". Non-existing '
+                        'tests are just ignored (no error is raised).')
     return parser.parse_args()
 
 
@@ -109,16 +114,21 @@ for directory, _, _ in os.walk(args.folder):
                  % (os.path.join(directory, 'lift.yaml'), e))
 
     for test in tests:
+        test_string = os.path.join(directory, test.name)
+        if args.test and test_string not in args.test:
+            # This is not one of the test the user explicitly asked for
+            continue
+
         tests_count += 1
         try:
-            sys.stdout.write('Running %s/%s...' % (directory, test.name))
+            sys.stdout.write('Running %s...' % test_string)
             sys.stdout.flush()
             status = test.run()
         except Exception as e:
             status = False
             test.stdout = 'An exception was raised during the test execution!'
             test.stderr = str(e)
-        res_string = '\r%s/%s {0:>{1}}\n' % (directory, test.name)
+        res_string = '\r%s {0:>{1}}\n' % test_string
         if status:
             # TODO: align status according to output size
             if not args.no_color:
