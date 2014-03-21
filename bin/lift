@@ -35,6 +35,8 @@ def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('-V', '--version', action='version',
                         version=lift.version)
+    parser.add_argument('-n', '--no-color', action='store_true',
+                        help='Disable colored output')
     return parser.parse_args()
 
 
@@ -48,9 +50,6 @@ args = parse()
 # Top-level check
 if not os.path.isfile('lift.yaml'):
     sys.exit('No lift.yaml file found in this folder.')
-
-# TODO: option
-color = True
 
 # Folder mapping, used for remotes and environment inheritance
 mapping = []
@@ -100,14 +99,14 @@ for directory, _, _ in os.walk('.'):
         res_string = '\r%s/%s {0:>{1}}\n' % (directory, test.name)
         if status:
             # TODO: align status according to output size
-            if color:
+            if not args.no_color:
                 # Green
                 print(res_string.format('\033[92mOK\033[0m', 89 - len(res_string)))
             else:
                 print(res_string.format('OK', 80 - len(res_string)))
         else:
             all_failed_tests.append(test)
-            if color:
+            if not args.no_color:
                 # Red
                 print(res_string.format('\033[91mFAIL\033[0m', 89 - len(res_string)))
             else:
