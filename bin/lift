@@ -32,6 +32,14 @@ from lift.loader import load_config_file, load_upper_inheritance
 
 def parse():
     """Command line argument parsing"""
+
+    def is_dir(parser, path):
+        """Additional type checker for argparse"""
+        if not os.path.isdir(path):
+            parser.error('%s: no such file.' % path)
+        else:
+            return path
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-V', '--version', action='version',
                         version=lift.version)
@@ -42,6 +50,10 @@ def parse():
     parser.add_argument('--no-upper-inheritance', action='store_true',
                         help='Do not load remotes/environment from upper level'
                         ' lift.yaml files')
+    parser.add_argument('-f', '--folder',
+                        type=lambda p: is_dir(parser, p), default='.',
+                        help='Specify the root folder in which tests will be '
+                        'looked for (default to the current working directory)')
     return parser.parse_args()
 
 
@@ -52,8 +64,8 @@ if __name__ != '__main__':
 # Parse arguments
 args = parse()
 
-# Top-level check
-if not os.path.isfile('lift.yaml'):
+# Do we have a description file to parse?
+if not os.path.isfile(os.path.join(args.folder, 'lift.yaml')):
     sys.exit('No lift.yaml file found in this folder.')
 
 # Folder mapping, used for remotes and environment inheritance
@@ -61,7 +73,7 @@ mapping = []
 
 # Load remotes/environment from upper level lift.yaml files
 if not args.no_upper_inheritance:
-    remotes, environment = load_upper_inheritance('.')
+    remotes, environment = load_upper_inheritance(args.folder)
 else:
     remotes = {}
     environment = {}
@@ -70,7 +82,7 @@ tests_count = 0.0
 # Failed tests objects (including sub folders), used for the final summary
 all_failed_tests = []
 
-for directory, _, _ in os.walk('.'):
+for directory, _, _ in os.walk(args.folder):
     if not os.path.isfile(os.path.join(directory, 'lift.yaml')):
         continue
 
