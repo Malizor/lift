@@ -37,6 +37,8 @@ def parse():
                         version=lift.version)
     parser.add_argument('-n', '--no-color', action='store_true',
                         help='Disable colored output')
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='Also print the output of successful tests')
     return parser.parse_args()
 
 
@@ -112,6 +114,7 @@ for directory, _, _ in os.walk('.'):
             else:
                 print(res_string.format('FAIL', 80 - len(res_string)))
 
+        if not status or args.verbose:
             if test.stdout:
                 print('STDOUT:\n%s\n' % test.stdout)
             if test.stderr:
@@ -146,5 +149,4 @@ else:
     print('Congratulation! \o/\n')
 
 # TODO
-# option --verbose
 # upper inheritance
