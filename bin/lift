@@ -40,7 +40,7 @@ def load_config_file(path, remotes={}, environment={}):
     """
 
     with open(path) as config_file:
-        conf = yaml.load(open(path))
+        conf = yaml.load(config_file)
 
     # Handle empty files
     if conf is None:
@@ -163,7 +163,9 @@ if __name__ == '__main__':
 
     # Folder mapping, used for remotes and environment inheritance
     mapping = []
-
+    tests_count = 0.0
+    # Failed tests objects (including sub folders), used for the final summary
+    all_failed_tests = []
     for directory, _, _ in os.walk('.'):
         if not os.path.isfile(os.path.join(directory, 'lift.yaml')):
             continue
@@ -195,6 +197,7 @@ if __name__ == '__main__':
                      % (os.path.join(directory, 'lift.yaml'), e))
 
         for test in tests:
+            tests_count += 1
             try:
                 sys.stdout.write('Running %s/%s...' % (directory, test.name))
                 sys.stdout.flush()
@@ -212,6 +215,7 @@ if __name__ == '__main__':
                 else:
                     print(res_string.format('OK', 80 - len(res_string)))
             else:
+                all_failed_tests.append(test)
                 if color:
                     # Red
                     print(res_string.format('\033[91mFAIL\033[0m', 89 - len(res_string)))
@@ -223,11 +227,35 @@ if __name__ == '__main__':
                 if test.stderr:
                     print('STDERR:\n%s\n' % test.stderr)
 
-# TODO
-# summary at the end
-# - count (success rate)
-# - remind errors
+    # All tests were run, print a summary
+    print('\nEnd of tests.')
+    if all_failed_tests:
+        print('\nSummary of failed tests:\n')
+        print('=' * 80)
+    for test in all_failed_tests:
+        if test.return_code != test.expected_return_code:
+            print('\n%s/%s returned %d instead of %d\n' % (test.directory,
+                                                           test.name,
+                                                           test.return_code,
+                                                           test.expected_return_code))
+            if test.stdout:
+                print('STDOUT was:\n%s\n' % test.stdout)
+            if test.stderr:
+                print('STDERR was:\n%s\n' % test.stderr)
 
+            print('=' * 80)
+
+    success_count = tests_count - len(all_failed_tests)
+    print('\nPass rate: %d/%d (%d%%)\n' % (success_count,
+                                           tests_count,
+                                           int(round((success_count / tests_count) * 100))))
+
+    if all_failed_tests:
+        sys.exit(1)
+    else:
+        print('Congratulation! \o/\n')
+
+# TODO
 # option --verbose
 # upper inheritance
 # parse tests in order
