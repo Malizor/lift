@@ -72,23 +72,22 @@ def load_upper_inheritance(directory_path):
 
     return remotes, environment
 
-def load_config_file(path, remotes={}, environment={}):
+def load_config_file(yaml_path, remotes, environment):
     """Load a test-suite description file
 
     Parsed remotes and environment are merged with the provided parameters
-
     (inheritance).
     Returns a list of run-able tests and the new remotes and environment dicts.
     """
 
-    with open(path) as config_file:
+    with open(yaml_path) as config_file:
         conf = yaml.load(config_file)
 
     # Handle empty files
     if conf is None:
         conf = {}
 
-    tests = []
+    tests = []  # list of all tests
     # load settings
     if 'settings' in conf:
         for item in conf['settings']:
@@ -141,7 +140,7 @@ def load_config_file(path, remotes={}, environment={}):
             # Create the test object
             test = LocalTest(test_name,
                              conf[section]['command'],
-                             os.path.dirname(path),
+                             os.path.dirname(yaml_path),
                              conf[section].get('return code', 0),
                              conf[section].get('timeout', 0),
                              environment.copy())
@@ -178,7 +177,7 @@ def load_config_file(path, remotes={}, environment={}):
             test = RemoteTest(test_name,
                               conf[section]['command'],
                               remotes[remote],
-                              os.path.dirname(path),
+                              os.path.dirname(yaml_path),
                               conf[section].get('return code', 0),
                               conf[section].get('timeout', 0),
                               environment.copy(),
