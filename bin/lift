@@ -122,7 +122,7 @@ for directory, _, _ in os.walk(args.folder):
                  % (os.path.join(directory, 'lift.yaml'), e))
 
     for test in tests:
-        test_string = os.path.join(directory, test.name)
+        test_string = '%s/%s' % (directory, test.name)
 
         # Should we ignore this test?
         if args.test_expression:
