@@ -22,6 +22,7 @@
 """The lift binary"""
 
 import os
+import re
 import sys
 import argparse
 
@@ -47,6 +48,8 @@ def parse():
                         help='Disable colored output')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Also print the output of successful tests')
+    parser.add_argument('-r', '--regex', action='store_true',
+                        help='Process test_expression as standard Python regex')
     parser.add_argument('--no-upper-inheritance', action='store_true',
                         help='Do not load remotes/environment from upper level'
                         ' lift.yaml files')
@@ -54,11 +57,16 @@ def parse():
                         type=lambda p: is_dir(parser, p), default='.',
                         help='Specify the root folder in which tests will be '
                         'looked for (default to the current working directory)')
-    parser.add_argument('test', nargs='*',
-                        help='Specify individual tests to run. '
-                        'The format to use is the same as the one found in the '
-                        'lift output, ie. "FOLDER/TEST_NAME". Non-existing '
-                        'tests are just ignored (no error is raised).')
+    parser.add_argument('test_expression', nargs='*',
+                        help='Specify tests to run. By default, all discovered'
+                        ' tests are ran. '
+                        'You can use the same format as the one found in the'
+                        ' lift output, ie. "FOLDER/TEST_NAME". '
+                        'If you set the "--regex" option, expressions will be'
+                        ' matched as standard Python regex. For example, ".*foo"'
+                        ' will match all tests containing the word "foo". '
+                        'See http://docs.python.org/library/re.html for more '
+                        'information.')
     return parser.parse_args()
 
 
@@ -115,9 +123,21 @@ for directory, _, _ in os.walk(args.folder):
 
     for test in tests:
         test_string = os.path.join(directory, test.name)
-        if args.test and test_string not in args.test:
-            # This is not one of the test the user explicitly asked for
-            continue
+
+        # Should we ignore this test?
+        if args.test_expression:
+            if not args.regex and test_string not in args.test_expression:
+                # This is not one of the test the user explicitly asked for
+                continue
+            elif args.regex:
+                matched = False
+                for regex in args.test_expression:
+                    if re.match(regex, test_string):
+                        matched = True
+                        break
+                if not matched:
+                    # test not matched, ignore it
+                    continue
 
         tests_count += 1
         try:
