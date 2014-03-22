@@ -83,8 +83,8 @@ else:
     remotes = {}
     environment = {}
 
+# Initialize variables needed for the final summary
 tests_count = 0.0
-# Failed tests objects (including sub folders), used for the final summary
 all_failed_tests = []
 
 for directory, _, _ in os.walk(args.folder):
@@ -150,7 +150,10 @@ for directory, _, _ in os.walk(args.folder):
             if test.stderr:
                 print('STDERR:\n%s\n' % test.stderr)
 
-# All tests were run, print a summary
+# All tests were run, summary time
+if tests_count == 0:
+    sys.exit('No test was run!')
+
 print('\nEnd of tests.')
 if all_failed_tests:
     print('\nSummary of failed tests:\n')
