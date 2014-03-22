@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# LIFT Integration-Functional Testing - High level test framework
+# LIFT Integration-Functional Testing - A meta test framework
 # Copyright © 2014 SmartJog S.A
 #
 # This program is free software; you can redistribute it and/or
