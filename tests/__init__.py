@@ -19,28 +19,10 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
 # USA.
 
-import os
+"""Test file for lift functions"""
 
-from setuptools import setup
+import unittest
 
-import lift
-
-
-ldesc = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
-
-setup(
-    name='lift',
-    version=lift.version,
-    description='High level test framework',
-    long_description=ldesc,
-    author='Nicolas Delvaux',
-    author_email='nicolas.delvaux@arkena.com',
-    license='GPL2+',
-    packages=['lift'],
-    scripts=['bin/lift'],
-    test_suite='tests',
-    classifiers=[
-        'Operating System :: Unix',
-        'Programming Language :: Python',
-    ],
-)
+if __name__ == '__main__':
+    suite = unittest.TestLoader().discover('.', pattern='test_*.py')
+    unittest.TextTestRunner(verbosity=2).run(suite)

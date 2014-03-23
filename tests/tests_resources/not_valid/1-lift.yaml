@@ -1,0 +1,15 @@
+# Unknown section
+foo:
+    define my_remote:
+        host:  example.org
+        username: root
+        password: foobar
+    environment:
+        MY_ENV_VAR1: foo
+        MY_ENV_VAR2: bar 
+
+test ping:
+    command: "ping -c 2 localhost"
+    return code: 0
+    timeout: 10
+

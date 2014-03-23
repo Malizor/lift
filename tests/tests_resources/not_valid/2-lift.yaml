@@ -1,0 +1,5 @@
+# Test without command
+test l33t:
+    return code: 0
+    timeout: 10
+

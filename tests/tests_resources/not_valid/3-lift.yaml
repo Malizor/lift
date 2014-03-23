@@ -1,0 +1,15 @@
+settings:
+    define remote:
+        host:  example.org
+        username: root
+        password: foobar
+# Duplicated test
+test l33t:
+    command: sleep 2
+    return code: 0
+    timeout: 10
+
+remote test l33t:
+    command: sleep 2
+    return code: 0
+    timeout: 10

@@ -1,0 +1,14 @@
+settings:
+    define my_remote2:
+        host:  example.org
+        username: foobar
+    environment:
+        MY_OTHER_ENV_VAR: foo_yet_again
+
+my_remote test remote_inheritance:
+    command: "ping -c 2 localhost"
+    return code: 0
+    timeout: 10
+    environment:
+        MY_ENV_VAR1: not_foo2
+

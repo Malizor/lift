@@ -1,0 +1,11 @@
+settings:
+    define remote:
+        host:  example.org
+        username: root
+        password: foobar
+
+# Unknown_remote
+remote2 test l33t:
+    command: sleep 2
+    return code: 0
+    timeout: 10

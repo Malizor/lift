@@ -1,0 +1,23 @@
+settings:
+    define my_remote:
+        host:  example.com
+        username: root
+        password: foobar
+    environment:
+        MY_ENV_VAR1: foo
+        MY_ENV_VAR2: bar 
+
+test ping:
+    command: "sleep 1"
+    return code: 0
+    timeout: 10
+
+my_remote test remote_env_with_resource:
+    command: "sh test/test.sh"
+    return code: 0
+    timeout: 2
+    resources:
+        - test/
+    environment:
+        MY_VAR: content
+        MY_ENV_VAR2: edit_bar
