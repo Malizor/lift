@@ -59,6 +59,10 @@ class RemoteTest(object):
     def __repr__(self):
         return 'RemoteTest<%s>' % self.name
 
+    def __eq__(self, other):
+        return (isinstance(other, self.__class__)
+                and self.__dict__ == other.__dict__)
+
     def run(self):
         """Execute the test.
 
