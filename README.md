@@ -51,6 +51,7 @@ Just use `sudo python setup.py install`
 * Python 2.7
 * python-yaml
 * python-paramiko
+* txt2tags (for the man page)
 
 
 ### License

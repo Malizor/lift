@@ -20,11 +20,14 @@
 # USA.
 
 import os
+import subprocess
 
 from setuptools import setup
 
 import lift
 
+# Build the manpage
+subprocess.call(['txt2tags', '-o', 'doc/lift.1', 'doc/lift.t2t'])
 
 ldesc = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
@@ -39,6 +42,7 @@ setup(
     packages=['lift'],
     scripts=['bin/lift'],
     test_suite='tests',
+    data_files=[('/usr/share/man/man1/', ['doc/lift.1'])],
     classifiers=[
         'Operating System :: Unix',
         'Programming Language :: Python',
