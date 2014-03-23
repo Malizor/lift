@@ -66,15 +66,21 @@ class LocalTest(object):
 
         def run_command():
             """The command is ran in a thread to implement the timeout setting"""
+
+            try:
+                orig_dir = os.getcwd()
+                os.chdir(self.directory)
+            except OSError as e:
+                self.stderr += '\n%s: %s' % (self.directory, e)
+                return False
             try:
                 self._process = Popen(args, stdout=PIPE, stderr=PIPE, env=self.environment)
-            except OSError:
-                # The test program is not in path, try in the current directory
-                path = os.path.join(self.directory, args[0])
-                if not os.path.isfile(path):
-                    raise
-                args[0] = path
-                self._process = Popen(path, stdout=PIPE, env=environment)
+            except OSError as e:
+                self.stderr += '\nProcess launch<%s>: %s' % (args, e)
+                return False
+            finally:
+                os.chdir(orig_dir)
+
             self.stdout, self.stderr = self._process.communicate()
             self.return_code = self._process.wait()
 
