@@ -132,13 +132,15 @@ class LocalTestTestCase(unittest.TestCase):
     def test_executable(self):
         """Test that executable test.directory are usable"""
 
+        cur_dir = os.path.dirname(os.path.realpath(__file__))
+
         expected_return_code = 0
         expected_stdout = 'foobar\n'
         expected_stderr = ''
 
         test = LocalTest('simple',
                          './my_script.sh',
-                         'tests_resources',
+                         os.path.join(cur_dir, 'tests_resources'),
                          expected_return_code,
                          10,
                          {})

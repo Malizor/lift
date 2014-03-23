@@ -40,7 +40,8 @@ class LoadUpperInheritanceTestCase(unittest.TestCase):
     def test_no_upper_inheritance(self):
         """No setting should be inheritable in the top-level directory"""
 
-        directory = os.path.join('tests_resources', 'valid')
+        directory = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                 'tests_resources', 'valid')
         self.assertTrue(os.path.isdir(directory), '%s does not exist!' % directory)
 
         remotes, environment = load_upper_inheritance(directory)
@@ -54,7 +55,8 @@ class LoadUpperInheritanceTestCase(unittest.TestCase):
 
     def test_upper_inheritance(self):
         """Check the upper settings inheritance with 1 depth level"""
-        directory = os.path.join('tests_resources', 'valid', 'sub_test')
+        directory = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                 'tests_resources', 'valid', 'sub_test')
         self.assertTrue(os.path.isdir(directory), '%s does not exist!' % directory)
 
         expected_remotes = {'my_remote':
@@ -75,7 +77,8 @@ class LoadUpperInheritanceTestCase(unittest.TestCase):
 
         Test overriding/merging of upper level settings.
         """
-        directory = os.path.join('tests_resources', 'valid',
+        directory = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                 'tests_resources', 'valid',
                                  'sub_test', 'sub_sub_test')
         self.assertTrue(os.path.isdir(directory), '%s does not exist!' % directory)
 
@@ -100,7 +103,8 @@ class LoadConfigFileTestCase(unittest.TestCase):
 
     def test_unknown_section(self):
         """Check that a proper exception is raised"""
-        path = os.path.join('tests_resources', 'not_valid', '1-lift.yaml')
+        path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                            'tests_resources', 'not_valid', '1-lift.yaml')
 
         self.assertTrue(os.path.isfile(path), '%s does not exist!' % path)
         with self.assertRaisesRegexp(InvalidDescriptionFile, 'Unknown section'):
@@ -108,7 +112,8 @@ class LoadConfigFileTestCase(unittest.TestCase):
 
     def test_no_command(self):
         """Check that a proper exception is raised"""
-        path = os.path.join('tests_resources', 'not_valid', '2-lift.yaml')
+        path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                            'tests_resources', 'not_valid', '2-lift.yaml')
 
         self.assertTrue(os.path.isfile(path), '%s does not exist!' % path)
         with self.assertRaisesRegexp(InvalidDescriptionFile, 'No command defined'):
@@ -116,7 +121,8 @@ class LoadConfigFileTestCase(unittest.TestCase):
 
     def test_duplicated_test(self):
         """Check that a proper exception is raised"""
-        path = os.path.join('tests_resources', 'not_valid', '3-lift.yaml')
+        path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                            'tests_resources', 'not_valid', '3-lift.yaml')
 
         self.assertTrue(os.path.isfile(path), '%s does not exist!' % path)
         with self.assertRaisesRegexp(InvalidDescriptionFile, 'Duplicated test'):
@@ -124,7 +130,8 @@ class LoadConfigFileTestCase(unittest.TestCase):
 
     def test_unknown_remote(self):
         """Check that a proper exception is raised"""
-        path = os.path.join('tests_resources', 'not_valid', '4-lift.yaml')
+        path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                            'tests_resources', 'not_valid', '4-lift.yaml')
 
         self.assertTrue(os.path.isfile(path), '%s does not exist!' % path)
         with self.assertRaisesRegexp(InvalidDescriptionFile, 'Unknown remote'):
@@ -132,7 +139,8 @@ class LoadConfigFileTestCase(unittest.TestCase):
 
     def test_load(self):
         """Check a load, without external inheritance"""
-        path = os.path.join('tests_resources', 'valid', 'lift.yaml')
+        path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                            'tests_resources', 'valid', 'lift.yaml')
 
         self.assertTrue(os.path.isfile(path), '%s does not exist!' % path)
 
@@ -170,7 +178,8 @@ class LoadConfigFileTestCase(unittest.TestCase):
 
     def test_load_with_inheritance(self):
         """Check a load, with external inheritance"""
-        path = os.path.join('tests_resources', 'valid', 'lift.yaml')
+        path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                            'tests_resources', 'valid', 'lift.yaml')
 
         self.assertTrue(os.path.isfile(path), '%s does not exist!' % path)
 
