@@ -20,14 +20,18 @@
 # USA.
 
 import os
+import sys
 import subprocess
 
 from setuptools import setup
 
 import lift
 
-# Build the manpage
-subprocess.call(['txt2tags', '-o', 'doc/lift.1', 'doc/lift.t2t'])
+try:
+    # Build the manpage
+    subprocess.call(['txt2tags', '-o', 'doc/lift.1', 'doc/lift.t2t'])
+except OSError:
+    sys.exit('You have to install txt2tags.')
 
 ldesc = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
