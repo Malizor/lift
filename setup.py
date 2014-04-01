@@ -51,4 +51,6 @@ setup(
         'Operating System :: Unix',
         'Programming Language :: Python',
     ],
+    setup_requires=['docutils'],
+    install_requires=['paramiko', 'pyyaml'],
 )
