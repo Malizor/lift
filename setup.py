@@ -29,9 +29,9 @@ import lift
 
 try:
     # Build the manpage
-    subprocess.call(['txt2tags', '-o', 'doc/lift.1', 'doc/lift.t2t'])
+    subprocess.call(['rst2man', 'doc/lift.rst', 'doc/lift.1'])
 except OSError:
-    sys.exit('You have to install txt2tags.')
+    sys.exit('You have to install rst2man.')
 
 ldesc = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
