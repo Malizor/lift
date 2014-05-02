@@ -94,7 +94,11 @@ class RemoteTest(object):
             if not os.path.isabs(resource):
                 resource = os.path.join(self.directory, resource)
             if os.path.isfile(resource):
-                ftp.put(resource, os.path.join(test_folder, os.path.basename(resource)))
+                remote_path = os.path.join(test_folder, os.path.basename(resource))
+                ftp.put(resource, remote_path)
+                # Also copy the file mode
+                ftp.chmod(remote_path,
+                          os.stat(resource).st_mode)
                 continue
             elif os.path.isdir(resource):
                 # Upload the whole folder
