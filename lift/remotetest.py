@@ -156,6 +156,6 @@ class RemoteTest(object):
             self.stderr += '\nTest interrupted: timeout'
 
         # Cleanup
-        ssh.exec_command('rm -rf /tmp/test_case')
+        ssh.exec_command('rm -rf %s' % test_folder)
 
         return self.return_code == self.expected_return_code
