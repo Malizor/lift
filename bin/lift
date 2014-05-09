@@ -201,5 +201,3 @@ if all_failed_tests:
 else:
     print('Congratulation! \o/\n')
 
-# TODO
-# upper inheritance
