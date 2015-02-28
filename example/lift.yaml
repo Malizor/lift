@@ -19,7 +19,7 @@ settings:
     # These can be used as a convenient way to pass common settings around
     environment:
         MY_ENV_VAR1: foo
-        MY_ENV_VAR2: bar 
+        MY_ENV_VAR2: bar
 
 # The 'test' keyword followed by the test name
 # This defines a test that will be ran locally
@@ -43,14 +43,14 @@ test env:
     environment:
         MY_VAR: content
 
-# the script expect MY_VAR to be set, but it is not
+# This test script expects MY_VAR to be set, but it is not...
 test env_fail:
     command: "sh test/test.sh"
-    return code: 1
+    return code: 1  # we expect failure
 
 
 # A known remote name followed by the 'test' keyword and the test name
-# This define a test that will be ran on my_remote.
+# This defines a test that will be ran on my_remote.
 my_remote test remote_ping:
    # The same fields as local tests can be used (same defaults)
     command: "ping -c 2 localhost"
@@ -79,4 +79,3 @@ my_remote test remote_env_fail_with_resource:
     timeout: 2
     resources:
         - test/test.sh
-

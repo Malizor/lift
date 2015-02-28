@@ -1,4 +1,7 @@
-# The my_remote definition is inherited from upper an level lift.yaml
+# All settings are inherited from higher level lift.yaml recursively
+# They can be overridden locally if needed
+
+# Here, 'my_remote' is known from inheritance
 my_remote test remote_inheritance:
     command: "ping -c 2 localhost"
     return code: 0
