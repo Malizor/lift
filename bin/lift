@@ -146,7 +146,11 @@ for directory, _, _ in os.walk(args.folder):
         print('\nTesting: {0:-<{1}}'.format(test_string + ' ', 71))
         if not args.quiet:
             test.streaming_output = sys.stdout
+
+        cwd = os.getcwd()
         status = test.run()
+        os.chdir(cwd)  # Tests may change directory and fail to cleanup
+
         res_string = '\n%s  {0:>{1}}\n' % test_string
         if status:
             # TODO: align status according to output size
