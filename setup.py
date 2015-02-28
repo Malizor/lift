@@ -22,16 +22,21 @@
 import os
 import sys
 import subprocess
-
-from setuptools import setup
+from distutils.command.build import build
+from setuptools import setup, find_packages
 
 import lift
 
-try:
-    # Build the manpage
-    subprocess.call(['rst2man', 'doc/lift.rst', 'doc/lift.1'])
-except OSError:
-    sys.exit('You have to install rst2man.')
+
+class MyBuild(build):
+    """Customized build command - build manpages."""
+    def run(self):
+        try:
+            print('Generating the manpage...')
+            subprocess.call(['rst2man', 'doc/lift.rst', 'doc/lift.1'])
+        except OSError:
+            print('Warning: rst2man was not found, skipping the manpage generation.')
+        build.run(self)
 
 ldesc = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 
@@ -43,10 +48,11 @@ setup(
     author='Nicolas Delvaux',
     author_email='nicolas.delvaux@arkena.com',
     license='GPL2+',
-    packages=['lift'],
+    packages=find_packages(),
     scripts=['bin/lift'],
     test_suite='tests',
     data_files=[('/usr/share/man/man1/', ['doc/lift.1'])],
+    cmdclass={'build': MyBuild},
     classifiers=[
         'Operating System :: Unix',
         'Programming Language :: Python',
