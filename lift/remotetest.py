@@ -23,78 +23,55 @@
 
 import os
 import paramiko
-import threading
-from time import sleep
 
+from lift.basetest import BaseTest
 from lift.exception import TestException
 
 
-class RemoteTest(object):
-
+class RemoteTest(BaseTest):
+    """Test as a remote (via ssh) command execution"""
     def __init__(self, name, command, remote,
+                 resources=[],
                  directory='.',
                  expected_return_code=0,
                  timeout=0,
                  environment={},
-                 resources=[]):
-        self.name = name
-        self.command = command
+                 streaming_output=None):
+
+        super(RemoteTest, self).__init__(name,
+                                         command,
+                                         directory,
+                                         expected_return_code,
+                                         timeout,
+                                         environment,
+                                         streaming_output)
         self.remote = remote
-        self.directory = directory
-        self.expected_return_code = expected_return_code
-        self.timeout = timeout
-        self.environment = environment
         self.resources = resources
 
-        # Test result
-        self.return_code = -42
-        self.stdout = ''
-        self.stderr = ''
+        # Internals
+        self._remote_test_folder = '/tmp/lift_test_%s' % self.name
+        self._ssh = paramiko.SSHClient()
+        self._channel = None
 
-        # Internal variables for the command process
-        self._out = None
-        self._err = None
-        self._process = None
-
-    def __repr__(self):
-        return 'RemoteTest<%s>' % self.name
-
-    def __eq__(self, other):
-        return (isinstance(other, self.__class__)
-                and self.__dict__ == other.__dict__)
-
-    def run(self):
-        """Execute the test.
-
-        Returns a boolean, representing the test success, and fill the
-        return_code, stdout and stderr attributes.
-        The test is considered successful if its returned value correspond to
-        expected_return_code.
-        """
-
-        # Remote folder where everything will happen
-        test_folder = '/tmp/lift_test_%s' % self.name
-
-        ssh = paramiko.SSHClient()
+    def setup(self):
         # Do not fail on key errors
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(self.remote['host'],
-                    username=self.remote['username'],
-                    password=self.remote.get('password', None))
+        self._ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        self._ssh.connect(self.remote['host'],
+                          username=self.remote['username'],
+                          password=self.remote.get('password', None))
         # Keep alive may be useful for some big tests
-        ssh.get_transport().set_keepalive(1)
+        self._ssh.get_transport().set_keepalive(1)
 
-        ftp = ssh.open_sftp()
-        _, out, _ = ssh.exec_command('rm -rf %s' % test_folder)
+        ftp = self._ssh.open_sftp()
+        _, out, _ = self._ssh.exec_command('rm -rf %s' % self._remote_test_folder)
         out.channel.recv_exit_status()  # Wait for completion
-        ftp.mkdir(test_folder)
+        ftp.mkdir(self._remote_test_folder)
 
         # Upload needed resources
         for resource in self.resources:
-            if not os.path.isabs(resource):
-                resource = os.path.join(self.directory, resource)
             if os.path.isfile(resource):
-                remote_path = os.path.join(test_folder, os.path.basename(resource))
+                remote_path = os.path.join(self._remote_test_folder,
+                                           os.path.basename(resource))
                 ftp.put(resource, remote_path)
                 # Also copy the file mode
                 ftp.chmod(remote_path,
@@ -103,13 +80,12 @@ class RemoteTest(object):
             elif os.path.isdir(resource):
                 # Upload the whole folder
                 for root, _, files in os.walk(resource):
-                    ftp.mkdir(os.path.join(test_folder,
-                                           os.path.relpath(root, self.directory)))
+                    ftp.mkdir(os.path.join(self._remote_test_folder, root))
 
                     for file_ in files:
                         local_path = os.path.join(root, file_)
-                        remote_path = os.path.join(test_folder,
-                                                   os.path.relpath(local_path, self.directory))
+                        remote_path = os.path.join(self._remote_test_folder, local_path)
+
                         ftp.put(local_path, remote_path)
                         # Also copy the file mode
                         ftp.chmod(remote_path,
@@ -118,44 +94,31 @@ class RemoteTest(object):
                 raise TestException('Could not upload resource - %s: '
                                     'No such file or directory.' % resource)
 
-        def run_command():
-            """The command is ran in a thread to implement the timeout setting"""
-            # Insert the environment directly on the command line
+    def cleanup(self):
+        self._ssh.exec_command('rm -rf %s' % self._remote_test_folder)
+
+    def command_launch(self):
+        """Launch the command and return the output stream without blocking
+
+        Returns:
+            The output stream of the command
+        """
+        # Insert the environment directly on the command line
+        try:
             command = self.command
             for key, value in self.environment.items():
                 command = '%s=%s %s' % (key, value, command)
-            _, self._out, self._err = ssh.exec_command('cd %s; %s' %
-                                                       (test_folder, command))
-            # Wait for the command completion
-            self.return_code = self._out.channel.recv_exit_status()
+            self._channel = self._ssh.get_transport().open_session()
+            self._channel.get_pty()
+            out_stream = self._channel.makefile()
+            self._channel.exec_command('cd %s; %s' % (self._remote_test_folder,
+                                                      command))
+            return out_stream
+        except Exception as exc:
+            return 'Failed to launch command `%s`: %s' % (command, exc)
 
-        thread = threading.Thread(target=run_command)
-        thread.daemon = True
-        thread.start()
+    def wait_command_completion(self):
+        return self._channel.recv_exit_status()
 
-        run_time = 0
-        try:
-            while thread.is_alive() and (self.timeout <= 0 or run_time < self.timeout):
-                # We can't join with the timeout to handle KeyboardInterrupt
-                thread.join(0.1)
-                run_time += 0.1
-        except KeyboardInterrupt:
-            self._out.channel.close()
-            thread.join()
-            raise
-
-        if thread.is_alive():
-            self._out.channel.close()
-            thread.join()
-            self.return_code = 124  # same as the 'timeout' command
-
-        self.stdout = self._out.read()
-        self.stderr = self._err.read()
-
-        if self.return_code == 124:
-            self.stderr += '\nTest interrupted: timeout'
-
-        # Cleanup
-        ssh.exec_command('rm -rf %s' % test_folder)
-
-        return self.return_code == self.expected_return_code
+    def interrupt_command(self):
+        self._channel.close()

@@ -140,15 +140,9 @@ for directory, _, _ in os.walk(args.folder):
                     continue
 
         tests_count += 1
-        try:
-            sys.stdout.write('Running %s...' % test_string)
-            sys.stdout.flush()
-            status = test.run()
-        except Exception as e:
-            status = False
-            test.stdout = 'An exception was raised during the test execution!'
-            test.stderr = str(e)
-        res_string = '\r%s {0:>{1}}\n' % test_string
+        print('\nTesting: {0:-<{1}}'.format(test_string + ' ', 71))
+        status = test.run()
+        res_string = '\n%s  {0:>{1}}\n' % test_string
         if status:
             # TODO: align status according to output size
             if not args.no_color:
@@ -165,10 +159,8 @@ for directory, _, _ in os.walk(args.folder):
                 print(res_string.format('FAIL', 80 - len(res_string)))
 
         if not status or args.verbose:
-            if test.stdout:
-                print('STDOUT:\n%s\n' % test.stdout)
-            if test.stderr:
-                print('STDERR:\n%s\n' % test.stderr)
+            if test.output:
+                print('OUTPUT:\n%s\n' % test.output)
 
 # All tests were run, summary time
 if tests_count == 0:
@@ -180,14 +172,12 @@ if all_failed_tests:
     print('=' * 80)
 for test in all_failed_tests:
     if test.return_code != test.expected_return_code:
-        print('\n%s/%s returned %d instead of %d\n' % (test.directory,
+        print('\n%s/%s returned %s instead of %d\n' % (test.directory,
                                                        test.name,
-                                                       test.return_code,
+                                                       str(test.return_code),
                                                        test.expected_return_code))
-        if test.stdout:
-            print('STDOUT was:\n%s\n' % test.stdout)
-        if test.stderr:
-            print('STDERR was:\n%s\n' % test.stderr)
+        if test.output:
+            print('The output was:\n%s\n' % test.output)
 
         print('=' * 80)
 

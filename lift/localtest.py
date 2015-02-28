@@ -21,80 +21,76 @@
 
 """Local test implementation"""
 
-import os
 import shlex
-import threading
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, STDOUT
+
+from lift.basetest import BaseTest
 
 
-class LocalTest(object):
-
+class LocalTest(BaseTest):
+    """Test as a local command execution"""
     def __init__(self, name, command,
-                 directory='.', expected_return_code=0, timeout=0, environment={}):
-        self.name = name
-        self.command = command
-        self.directory = directory
-        self.expected_return_code = expected_return_code
-        self.timeout = timeout
-        self.environment = environment
+                 directory='.',
+                 expected_return_code=0,
+                 timeout=0,
+                 environment={},
+                 streaming_output=None):
+        """Create a ready to run LocalTest object
 
-        # Test result
-        self.return_code = -42
-        self.stdout = ''
-        self.stderr = ''
-
-        # Internal variable
+        Args:
+            name (str): The test name
+            command (str): The command to execute
+            directory (str): The directory in which the test will be executed
+            expected_return_code (int): The expected return code of the test
+            timeout (int): The time the test run must not exceed.
+                0 means infinite.
+            environment (dict): Environment that will be set for the test
+            streaming_output (file): File in which the command output will be
+                dynamically written. This is typically used to print on
+                sys.stdout or a file. None means 'nowhere'.
+        """
+        # This is the same as BaseTest constructor, except for a new internal
+        # class variable
+        super(LocalTest, self).__init__(name,
+                                        command,
+                                        directory,
+                                        expected_return_code,
+                                        timeout,
+                                        environment,
+                                        streaming_output)
         self._process = None
 
-    def __repr__(self):
-        return 'LocalTest<%s>' % self.name
+    def command_launch(self):
+        """Launch the command and return the output stream without blocking
 
-    def __eq__(self, other):
-        return (isinstance(other, self.__class__)
-                and self.__dict__ == other.__dict__)
-
-    def run(self):
-        """Execute the test.
-
-        Returns a boolean, representing the test success, and fill the
-        return_code, stdout and stderr attributes.
-        The test is considered successful if its returned value correspond to
-        expected_return_code.
+        Returns:
+            The output stream of the command OR a string containing a message
+            if the command launch failed.
         """
-
         args = shlex.split(self.command)
+        try:
+            self._process = Popen(args,
+                                  stdout=PIPE,
+                                  stderr=STDOUT,
+                                  env=self.environment)
+        except OSError as exc:
+            return 'Failed to launch command `%s`: %s' % (args, exc)
+        return self._process.stdout
 
-        def run_command():
-            """The command is ran in a thread to implement the timeout setting"""
+    def wait_command_completion(self):
+        """Block until the command completion
 
-            try:
-                orig_dir = os.getcwd()
-                os.chdir(self.directory)
-            except OSError as e:
-                self.stderr += '\n%s: %s' % (self.directory, e)
-                return False
-            try:
-                self._process = Popen(args, stdout=PIPE, stderr=PIPE, env=self.environment)
-            except OSError as e:
-                self.stderr += '\nProcess launch<%s>: %s' % (args, e)
-                return False
-            finally:
-                os.chdir(orig_dir)
+        Returns:
+            An int corresponding to the command return code
+        """
+        if self._process:
+            return self._process.wait()
+        else:
+            return 127  # command not found
 
-            self.stdout, self.stderr = self._process.communicate()
-            self.return_code = self._process.wait()
+    def interrupt_command(self):
+        """This function is called when the test is aborted
 
-        thread = threading.Thread(target=run_command)
-        thread.start()
-
-        timeout = self.timeout
-        if timeout <= 0:
-            timeout = None  # adapt to the thread API
-        thread.join(timeout)
-        if thread.is_alive():
-            self._process.terminate()
-            thread.join()
-            self.return_code = 124  # same as the 'timeout' command
-            self.stderr += '\nTest interrupted: timeout'
-
-        return self.return_code == self.expected_return_code
+        This can be because of a timeout or a "Ctrl+C"
+        """
+        self._process.terminate()
