@@ -147,16 +147,16 @@ for directory, _, _ in os.walk(args.folder):
             # TODO: align status according to output size
             if not args.no_color:
                 # Green
-                print(res_string.format('\033[92mOK\033[0m', 89 - len(res_string)))
+                print('\nResult: \033[92mOK\033[0m')
             else:
-                print(res_string.format('OK', 80 - len(res_string)))
+                print('\nResult: OK')
         else:
             all_failed_tests.append(test)
             if not args.no_color:
                 # Red
-                print(res_string.format('\033[91mFAIL\033[0m', 89 - len(res_string)))
+                print('\nResult: \033[91mFAIL\033[0m')
             else:
-                print(res_string.format('FAIL', 80 - len(res_string)))
+                print('\nResult: FAIL')
 
         if not status or args.verbose:
             if test.output:
@@ -168,8 +168,8 @@ if tests_count == 0:
 
 print('\nEnd of tests.')
 if all_failed_tests:
-    print('\nSummary of failed tests:\n')
     print('=' * 80)
+    print('\nSummary of failed tests:\n')
 for test in all_failed_tests:
     if test.return_code != test.expected_return_code:
         print('\n%s/%s returned %s instead of %d\n' % (test.directory,
@@ -179,7 +179,7 @@ for test in all_failed_tests:
         if test.output:
             print('The output was:\n%s\n' % test.output)
 
-        print('=' * 80)
+        print('####')
 
 success_count = tests_count - len(all_failed_tests)
 print('\nPass rate: %d/%d (%d%%)\n' % (success_count,
