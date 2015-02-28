@@ -35,14 +35,11 @@ OPTIONS
 =======
 
 **-h**, **--help**
-  Show an help message and exit
+  Show an help message and exit.
 
 **-V**, **--version**
-  Show the lift version
+  Show the lift version.
 
-**-v**, **--verbose**
-  Also print the stdout and stderr of successful tests.
-  By default, only failed tests are displayed.
 
 **-n**, **--no-color**
   Disable colored output.

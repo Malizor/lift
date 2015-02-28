@@ -46,8 +46,6 @@ def parse():
                         version=lift.version)
     parser.add_argument('-n', '--no-color', action='store_true',
                         help='Disable colored output')
-    parser.add_argument('-v', '--verbose', action='store_true',
-                        help='Also print the output of successful tests')
     parser.add_argument('-r', '--regex', action='store_true',
                         help='Process test_expression as standard Python regex')
     parser.add_argument('--no-upper-inheritance', action='store_true',
@@ -157,10 +155,6 @@ for directory, _, _ in os.walk(args.folder):
                 print('\nResult: \033[91mFAIL\033[0m')
             else:
                 print('\nResult: FAIL')
-
-        if not status or args.verbose:
-            if test.output:
-                print('OUTPUT:\n%s\n' % test.output)
 
 # All tests were run, summary time
 if tests_count == 0:
