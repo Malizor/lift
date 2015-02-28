@@ -148,25 +148,28 @@ class LoadConfigFileTestCase(unittest.TestCase):
                             OrderedDict([('host', 'example.com'),
                                          ('username', 'root'),
                                          ('password', 'foobar')])}
+
         expected_environment = {'MY_ENV_VAR1': 'foo',
                                 'MY_ENV_VAR2': 'bar'}
-        expected_tests = [LocalTest('ping',
-                                    'sleep 1',
-                                    os.path.dirname(path),
-                                    0,
-                                    10,
-                                    expected_environment.copy()),
+
+        expected_tests = [LocalTest('ping', 'sleep 1',
+                                    directory=os.path.dirname(path),
+                                    expected_return_code=0,
+                                    timeout=10,
+                                    environment=expected_environment.copy()),
                           RemoteTest('remote_env_with_resource',
                                      'sh test/test.sh',
                                      expected_remotes['my_remote'],
-                                     os.path.dirname(path),
-                                     0,
-                                     2,
-                                     {'MY_ENV_VAR1': 'foo',
-                                      'MY_ENV_VAR2': 'edit_bar',
-                                      'MY_VAR': 'content'},
-                                     ['test/'])]
+                                     resources=['test/'],
+                                     directory=os.path.dirname(path),
+                                     expected_return_code=0,
+                                     timeout=2,
+                                     environment={'MY_ENV_VAR1': 'foo',
+                                                  'MY_ENV_VAR2': 'edit_bar',
+                                                  'MY_VAR': 'content'})]
+
         tests, remotes, environment = load_config_file(path, {}, {})
+
         self.assertEqual(remotes, expected_remotes,
                          'Remotes: inherited %s instead of %s'
                          % (str(remotes), str(expected_remotes)))
@@ -191,32 +194,35 @@ class LoadConfigFileTestCase(unittest.TestCase):
                             OrderedDict([('host', 'example.org'),
                                          ('username', 'root'),
                                          ('password', 'barfoo')])}
+
         expected_environment = {'MY_ENV_VAR1': 'foo',
                                 'MY_ENV_VAR2': 'bar',
                                 'MY_ENV_VAR3': 'foobar'}
-        expected_tests = [LocalTest('ping',
-                                    'sleep 1',
-                                    os.path.dirname(path),
-                                    0,
-                                    10,
-                                    expected_environment.copy()),
+
+        expected_tests = [LocalTest('ping', 'sleep 1',
+                                    directory=os.path.dirname(path),
+                                    expected_return_code=0,
+                                    timeout=10,
+                                    environment=expected_environment.copy()),
                           RemoteTest('remote_env_with_resource',
                                      'sh test/test.sh',
                                      expected_remotes['my_remote'],
-                                     os.path.dirname(path),
-                                     0,
-                                     2,
-                                     {'MY_ENV_VAR1': 'foo',
-                                      'MY_ENV_VAR2': 'edit_bar',
-                                      'MY_ENV_VAR3': 'foobar',
-                                      'MY_VAR': 'content'},
-                                     ['test/'])]
+                                     resources=['test/'],
+                                     directory=os.path.dirname(path),
+                                     expected_return_code=0,
+                                     timeout=2,
+                                     environment={'MY_ENV_VAR1': 'foo',
+                                                  'MY_ENV_VAR2': 'edit_bar',
+                                                  'MY_ENV_VAR3': 'foobar',
+                                                  'MY_VAR': 'content'})]
+
         tests, remotes, environment = load_config_file(path,
                                                        {'my_remote2':
                                                         OrderedDict([('host', 'example.org'),
                                                                      ('username', 'root'),
                                                                      ('password', 'barfoo')])},
                                                        {'MY_ENV_VAR3': 'foobar'})
+
         self.assertEqual(remotes, expected_remotes,
                          'Remotes: inherited %s instead of %s'
                          % (str(remotes), str(expected_remotes)))

@@ -140,10 +140,10 @@ def load_config_file(yaml_path, remotes, environment):
             # Create the test object
             test = LocalTest(test_name,
                              conf[section]['command'],
-                             os.path.dirname(yaml_path),
-                             conf[section].get('return code', 0),
-                             conf[section].get('timeout', 0),
-                             environment.copy())
+                             directory=os.path.dirname(yaml_path),
+                             expected_return_code=conf[section].get('return code', 0),
+                             timeout=conf[section].get('timeout', 0),
+                             environment=environment.copy())
             # Set the test environment
             test.environment.update(conf[section].get('environment', {}))
 
@@ -177,11 +177,11 @@ def load_config_file(yaml_path, remotes, environment):
             test = RemoteTest(test_name,
                               conf[section]['command'],
                               remotes[remote],
-                              os.path.dirname(yaml_path),
-                              conf[section].get('return code', 0),
-                              conf[section].get('timeout', 0),
-                              environment.copy(),
-                              conf[section].get('resources', []))
+                              resources=conf[section].get('resources', []),
+                              directory=os.path.dirname(yaml_path),
+                              expected_return_code=conf[section].get('return code', 0),
+                              timeout=conf[section].get('timeout', 0),
+                              environment=environment.copy())
             # Set the test environment
             test.environment.update(conf[section].get('environment', {}))
 
