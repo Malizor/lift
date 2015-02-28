@@ -46,6 +46,8 @@ def parse():
                         version=lift.version)
     parser.add_argument('-n', '--no-color', action='store_true',
                         help='Disable colored output')
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help='Do not print the output of tests as they run')
     parser.add_argument('-r', '--regex', action='store_true',
                         help='Process test_expression as standard Python regex')
     parser.add_argument('--no-upper-inheritance', action='store_true',
@@ -139,6 +141,8 @@ for directory, _, _ in os.walk(args.folder):
 
         tests_count += 1
         print('\nTesting: {0:-<{1}}'.format(test_string + ' ', 71))
+        if not args.quiet:
+            test.streaming_output = sys.stdout
         status = test.run()
         res_string = '\n%s  {0:>{1}}\n' % test_string
         if status:

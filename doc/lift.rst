@@ -40,6 +40,8 @@ OPTIONS
 **-V**, **--version**
   Show the lift version.
 
+**-q**, **--quiet**
+  Do not print the output of tests as they run.
 
 **-n**, **--no-color**
   Disable colored output.
