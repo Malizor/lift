@@ -37,7 +37,7 @@ def parse():
     def is_dir(parser, path):
         """Additional type checker for argparse"""
         if not os.path.isdir(path):
-            parser.error('%s: no such file.' % path)
+            parser.error('%s: no such directory.' % path)
         else:
             return path
 
