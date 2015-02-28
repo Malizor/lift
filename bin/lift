@@ -48,6 +48,9 @@ def parse():
                         help='Disable colored output')
     parser.add_argument('-q', '--quiet', action='store_true',
                         help='Do not print the output of tests as they run')
+    parser.add_argument('-d', '--detailed-summary', action='store_true',
+                        help='Print the output of failed test in the final'
+                        ' summary')
     parser.add_argument('-r', '--regex', action='store_true',
                         help='Process test_expression as standard Python regex')
     parser.add_argument('--no-upper-inheritance', action='store_true',
@@ -174,7 +177,7 @@ for test in all_failed_tests:
                                                        test.name,
                                                        str(test.return_code),
                                                        test.expected_return_code))
-        if test.output:
+        if args.detailed_summary and test.output:
             print('The output was:\n%s\n' % test.output)
 
         print('####')

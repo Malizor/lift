@@ -43,6 +43,9 @@ OPTIONS
 **-q**, **--quiet**
   Do not print the output of tests as they run.
 
+**-d**, **--detailed-summary**
+  Print the output of failed tests in the final summary.
+
 **-n**, **--no-color**
   Disable colored output.
   Maybe useful, for example if colors interfere with your term.
