@@ -28,6 +28,9 @@ test ping:
     return code: 0  # optional (default to 0)
     timeout: 10  # optional (no timeout by default)
 
+test encoding:
+    command: "echo 'ééàà'"
+
 test timeout:
     command: "sleep 10"
     return code: 124  # This is the expected return code in case of a timeout
@@ -55,6 +58,9 @@ my_remote test remote_ping:
    # The same fields as local tests can be used (same defaults)
     command: "ping -c 2 localhost"
     timeout: 10
+
+my_remote test remote_encoding:
+    command: "echo 'ééàà'"
 
 my_remote test remote_timeout:
     command: "ping localhost"

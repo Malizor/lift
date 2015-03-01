@@ -22,8 +22,8 @@
 """Base test implementation"""
 
 import os
+from io import StringIO
 from threading import Thread
-from StringIO import StringIO
 
 
 class BaseTest(object):
@@ -147,9 +147,9 @@ class BaseTest(object):
         try:
             return self._run()
         except Exception as exc:
-            msg = 'An exception was raised during the test execution:\n%s\n' % str(exc)
+            msg = u'An exception was raised during the test execution:\n%s\n' % str(exc)
             if self.streaming_output is not None:
-                print self.streaming_output
+                print(self.streaming_output)
                 self.streaming_output.write(msg)
             self._output.write(msg)
             self._finalize_output()
@@ -185,6 +185,8 @@ class BaseTest(object):
             """
             def actual_copy_output(infile, *outfiles):
                 for line in iter(infile.readline, ''):
+                    if isinstance(line, bytes):
+                        line = line.decode('utf8')
                     for f in outfiles:
                         f.write(line)
                 infile.close()
@@ -201,7 +203,7 @@ class BaseTest(object):
             out = self.command_launch()
             if isinstance(out, str):
                 # An error occurred
-                msg = '\nAn error occurred: %s' % out
+                msg = u'\nAn error occurred: %s' % out
                 if self.streaming_output is not None:
                     self.streaming_output.write(msg)
                     self.streaming_output.flush()
@@ -229,7 +231,7 @@ class BaseTest(object):
             self.interrupt_command()
             thread.join()
             self.return_code = 124  # same as the 'timeout' command
-            msg = '\n\nTest interrupted: timeout\n'
+            msg = u'\n\nTest interrupted: timeout\n'
             if self.streaming_output is not None:
                 self.streaming_output.flush()
                 self.streaming_output.write(msg)

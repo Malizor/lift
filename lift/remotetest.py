@@ -115,7 +115,7 @@ class RemoteTest(BaseTest):
                                                       command))
             return out_stream
         except Exception as exc:
-            return 'Failed to launch command `%s`: %s' % (command, exc)
+            return u'Failed to launch command `%s`: %s' % (command, exc)
 
     def wait_command_completion(self):
         return self._channel.recv_exit_status()

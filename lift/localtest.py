@@ -67,14 +67,14 @@ class LocalTest(BaseTest):
             The output stream of the command OR a string containing a message
             if the command launch failed.
         """
-        args = shlex.split(self.command)
+        args = shlex.split(self.command.encode('utf8'))
         try:
             self._process = Popen(args,
                                   stdout=PIPE,
                                   stderr=STDOUT,
                                   env=self.environment)
         except OSError as exc:
-            return 'Failed to launch command `%s`: %s' % (args, exc)
+            return u'Failed to launch command `%s`: %s' % (args, exc)
         return self._process.stdout
 
     def wait_command_completion(self):

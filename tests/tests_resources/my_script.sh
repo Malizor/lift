@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-echo "foobar"
+echo "foobarééé"
 exit 0
