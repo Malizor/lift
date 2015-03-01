@@ -32,7 +32,7 @@ from lift.exception import InvalidDescriptionFile
 # Tune the yaml module to use an OrderedDict (keep tests ordering)
 def dict_representer(dumper, data):
     return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-                                    data.iteritems())
+                                    data.items())
 
 def dict_constructor(loader, node):
     return OrderedDict(loader.construct_pairs(node))
