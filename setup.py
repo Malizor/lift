@@ -20,7 +20,6 @@
 # USA.
 
 import os
-import sys
 import subprocess
 from distutils.command.build import build
 from setuptools import setup, find_packages

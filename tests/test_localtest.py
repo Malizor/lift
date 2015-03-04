@@ -22,11 +22,8 @@
 
 import os
 import unittest
-from collections import OrderedDict
 
 from lift.localtest import LocalTest
-from lift.exception import InvalidDescriptionFile
-from lift.loader import load_upper_inheritance, load_config_file
 
 
 class LocalTestTestCase(unittest.TestCase):
