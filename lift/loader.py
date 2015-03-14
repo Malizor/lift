@@ -42,6 +42,57 @@ yaml.add_representer(OrderedDict, dict_representer)
 yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
                      dict_constructor)
 
+def string_to_remote(string):
+    """Return the name and the remote dictionary matching the input string.
+
+    The input should be in the following form:
+    REMOTENAME=USERNAME:PASSWORD@HOST
+
+    Note that the PASSWORD field (along with the ':' separator) is optional.
+    Return None if the input is not valid.
+    """
+    if '=' not in string:
+        return None
+    name, rstring = string.split('=', 1)
+    if not name or '@' not in rstring:
+        return None
+    remote = {}
+    lstring, remote['host'] = rstring.rsplit('@', 1)
+    if not lstring or not remote['host']:
+        return None
+
+    if ':' in lstring:
+        remote['username'], remote['password'] = lstring.split(':', 1)
+    else:
+        remote['username'] = lstring
+
+    if not remote['username']:
+        return None
+
+    return name, remote
+
+def remote_to_string(remote):
+    """Return a string matching the input remote dictionary
+
+    The input should be in the following form:
+    {'host': 'HOST', 'username': 'USERNAME', 'password': 'PASSWORD'}
+    Note that the PASSWORD item is optional.
+
+    The output will be in the following form:
+    USERNAME:PASSWORD@HOST
+    The ':PASSWORD' part is optional.
+
+    Return None if the input is not valid.
+    """
+    if 'host' not in remote or 'username' not in remote:
+        return None
+    if 'password' in remote:
+        return '%s:%s@%s' % (remote['username'],
+                             remote['password'],
+                             remote['host'])
+    else:
+        return '%s@%s' % (remote['username'], remote['host'])
+
 def load_upper_inheritance(directory_path):
     """Look for and load remotes/environment from upper level lift.yaml files
 

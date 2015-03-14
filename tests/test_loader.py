@@ -18,11 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
 # USA.
 
-"""Tests for lift.loader functions
-
-These tests use the tests_resources folder and compare its known content
-with what the lift functions parse.
-"""
+"""Tests for lift.loader functions"""
 
 import os
 import unittest
@@ -31,11 +27,18 @@ from collections import OrderedDict
 from lift.localtest import LocalTest
 from lift.remotetest import RemoteTest
 from lift.exception import InvalidDescriptionFile
-from lift.loader import load_upper_inheritance, load_config_file
+from lift.loader import (load_upper_inheritance,
+                         load_config_file,
+                         string_to_remote,
+                         remote_to_string)
 
 
 class LoadUpperInheritanceTestCase(unittest.TestCase):
-    """Test the lift.loader.load_upper_inheritance function"""
+    """Test the lift.loader.load_upper_inheritance function
+
+    These tests use the tests_resources folder and compare its known content
+    with what the lift functions parse.
+    """
 
     def test_no_upper_inheritance(self):
         """No setting should be inheritable in the top-level directory"""
@@ -99,7 +102,11 @@ class LoadUpperInheritanceTestCase(unittest.TestCase):
 
 
 class LoadConfigFileTestCase(unittest.TestCase):
-    """Test the lift.loader.load_config_file function"""
+    """Test the lift.loader.load_config_file function
+
+    These tests use the tests_resources folder and compare its known content
+    with what the lift functions parse.
+    """
 
     def test_unknown_section(self):
         """Check that a proper exception is raised"""
@@ -231,3 +238,47 @@ class LoadConfigFileTestCase(unittest.TestCase):
                          % (str(environment), str(expected_environment)))
         self.assertEqual(tests, expected_tests,
                          'Expected and parsed tests are not the same')
+
+
+class RemoteHandlingTestCase(unittest.TestCase):
+    """Test the lift.loader remote handling functions"""
+
+    def test_from_string(self):
+        """Check with a full string"""
+        res = string_to_remote('name=login:pass@127.0.0.1')
+        self.assertEqual(res, ('name', {'host': '127.0.0.1',
+                                        'username': 'login',
+                                        'password': 'pass'}),
+                         'The function returned: %s' % str(res))
+
+    def test_from_string_no_pass(self):
+        """Check without the optional password"""
+        res = string_to_remote('name=login@127.0.0.1')
+        self.assertEqual(res, ('name', {'host': '127.0.0.1',
+                                        'username': 'login'}),
+                         'The function returned: %s' % str(res))
+
+    def test_from_bad_string(self):
+        """Check that the function returns None with a non-compliant string"""
+        res = string_to_remote('=foobar@')
+        self.assertEqual(res, None, 'The function returned: %s' % str(res))
+
+    def test_to_string(self):
+        """Check with a full remote"""
+        res = remote_to_string({'host': '127.0.0.1',
+                                'username': 'login',
+                                'password': 'pass'})
+        self.assertEqual(res, 'login:pass@127.0.0.1',
+                         'The function returned: %s' % res)
+
+    def test_to_string_no_pass(self):
+        """Check without the optional password"""
+        res = remote_to_string({'host': '127.0.0.1',
+                                'username': 'login'})
+        self.assertEqual(res, 'login@127.0.0.1',
+                         'The function returned: %s' % res)
+
+    def test_to_string_bad_input(self):
+        """Check that the function returns None with a non-compliant input"""
+        res = remote_to_string({'foobar': 42})
+        self.assertEqual(res, None, 'The function returned: %s' % res)
