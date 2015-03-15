@@ -8,7 +8,7 @@ Run a Lift test suite
 ---------------------
 
 :Authors: Written an maintained by Nicolas Delvaux <nicolas.delvaux@arkena.com>
-:Version: 1.6.0
+:Version: 2.0.0
 :Date: |date|
 :Copyright: GPL2+
 :Manual section: 1

@@ -1,3 +1,11 @@
+Version 2.0.0
+
+	* Port to Python3, drop support for Python2
+	* Allow to define remotes on the command line via the '--remote' option
+	* Add the '--put-remotes-in-environment' option
+	* Code cleanup
+	* Some small fixes
+
 Version 1.5.0 Released on 2015/03/01
 
 	* Tests now stream their output to stdout as they run
