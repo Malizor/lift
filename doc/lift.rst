@@ -8,7 +8,7 @@ Run a Lift test suite
 ---------------------
 
 :Authors: Written an maintained by Nicolas Delvaux <nicolas.delvaux@arkena.com>
-:Version: 1.0.0
+:Version: 1.6.0
 :Date: |date|
 :Copyright: GPL2+
 :Manual section: 1
@@ -84,8 +84,8 @@ OPTIONS
 RUN SPECIFIC TESTS
 ==================
 
-You can specify specific tests to run directly on the command line.
-You can use the test string format as one found in the lift output,
+You can select specific tests to run directly on the command line.
+You can use the test string format as found in the normal lift output,
 ie. "FOLDER/TEST_NAME".
 
 If you set the "--regex" option, expressions will be matched as standard
