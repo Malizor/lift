@@ -75,6 +75,29 @@ class LoadUpperInheritanceTestCase(unittest.TestCase):
                          'Environment: inherited %s instead of %s'
                          % (str(environment), str(expected_environment)))
 
+    def test_upper_inheritance_with_preset(self):
+        """Check the upper settings inheritance with preset remotes"""
+        directory = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                 'tests_resources', 'valid', 'sub_test')
+        self.assertTrue(os.path.isdir(directory), '%s does not exist!' % directory)
+
+        # Here preset fully override what is defined in lift.yaml
+        preset_remotes = {'my_remote': {'host': 'foo',
+                                        'bar': 'foobar',
+                                        'username': 'root'},
+                          'my_other_remote': {'host': 'foo',
+                                              'bar': 'foobar',
+                                              'username': 'root'}}
+
+        expected_environment = {'MY_ENV_VAR2': 'bar', 'MY_ENV_VAR1': 'foo'}
+        remotes, environment = load_upper_inheritance(directory, preset_remotes)
+        self.assertEqual(remotes, preset_remotes,
+                         'Remotes: inherited %s instead of %s'
+                         % (str(remotes), str(preset_remotes)))
+        self.assertEqual(environment, expected_environment,
+                         'Environment: inherited %s instead of %s'
+                         % (str(environment), str(expected_environment)))
+
     def test_upper_upper_inheritance(self):
         """Check the upper settings inheritance with 2 depth levels
 
