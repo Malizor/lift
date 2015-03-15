@@ -67,7 +67,7 @@ class LocalTest(BaseTest):
             The output stream of the command OR a string containing a message
             if the command launch failed.
         """
-        args = shlex.split(self.command.encode('utf8'))
+        args = shlex.split(self.command)
         try:
             self._process = Popen(args,
                                   stdout=PIPE,

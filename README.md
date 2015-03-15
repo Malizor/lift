@@ -44,14 +44,14 @@ a functional test suite for lift itself), see the `example` folder.
 
 ### Installation
 
-Just use `sudo python setup.py install`
+Just use `sudo python3 setup.py install`
 
 ##### Dependencies
 
-* Python 2.7
-* python-yaml
-* python-paramiko
-* python-docutils (for the man page)
+* Python 3
+* python3-yaml
+* python3-paramiko
+* python3-docutils (for the man page)
 
 
 ### License
