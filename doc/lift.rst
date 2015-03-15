@@ -61,6 +61,14 @@ OPTIONS
   This option disable this behaviour and consider the current test directory
   as a top level one.
 
+**--put-remotes-in-environment**
+  All defined remotes will be passed as environment variables to tests.
+  Variables will be in the following form:
+  *LIFT_REMOTE_remotename=login:password@host*. Note that the password (along
+  with the ":" separator) will not be there if it was not defined in the first
+  place. **SECURITY WARNING**: Do not use this option if some of your binary
+  tests can not be trusted to keep these credentials for themselves.
+
 **-f** *FOLDER*, **--folder** *FOLDER*
   Specify the root folder in which tests will be looked for.
   By default, use the current working directory.

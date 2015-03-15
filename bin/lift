@@ -80,6 +80,16 @@ def parse():
                         'This option can be used multiple times to define '
                         'multiple remotes. Remotes defined via this option '
                         'supersede those defined via lift.yaml files.')
+    parser.add_argument('--put-remotes-in-environment', action='store_true',
+                        help='All defined remotes will be passed as '
+                        'environment variables to tests. Variables will be '
+                        'in the following form: '
+                        '"LIFT_REMOTE_remotename=login:password@host". '
+                        'Note that the password (along with the ":" '
+                        'separator) will not be there if it was not defined '
+                        'in the first place. Please do not use this option '
+                        'if some of your binary tests can not be trusted to '
+                        'keep these credentials for themselves.')
     parser.add_argument('test_expression', nargs='*',
                         help='Specify tests to run. By default, all discovered'
                         ' tests are ran. '
@@ -142,7 +152,8 @@ for directory, _, _ in os.walk(args.folder):
         tests, remotes, environment = load_config_file(os.path.join(directory, 'lift.yaml'),
                                                        remotes,
                                                        environment,
-                                                       preset_remotes)
+                                                       preset_remotes,
+                                                       args.put_remotes_in_environment)
         mapping.append({'dir': directory,
                         'remotes': remotes,
                         'environment': environment})

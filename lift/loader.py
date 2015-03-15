@@ -127,7 +127,8 @@ def load_upper_inheritance(directory_path, preset_remotes):
 
     return remotes, environment
 
-def load_config_file(yaml_path, remotes, environment, preset_remotes):
+def load_config_file(yaml_path, remotes, environment, preset_remotes,
+                     remotes_in_env=False):
     """Load a test-suite description file
 
     Parsed remotes and environment are merged with the provided parameters
@@ -206,6 +207,12 @@ def load_config_file(yaml_path, remotes, environment, preset_remotes):
             # Set the test environment
             test.environment.update(conf[section].get('environment', {}))
 
+            if remotes_in_env:
+                remotes_env = {}
+                for remote in remotes:
+                    remotes_env['LIFT_REMOTE_%s' % remote] = remote_to_string(remotes[remote])
+                test.environment.update(remotes_env)
+
             # Add it to the queue
             tests.append(test)
             continue
@@ -243,6 +250,12 @@ def load_config_file(yaml_path, remotes, environment, preset_remotes):
                               environment=environment.copy())
             # Set the test environment
             test.environment.update(conf[section].get('environment', {}))
+
+            if remotes_in_env:
+                remotes_env = {}
+                for remote in remotes:
+                    remotes_env['LIFT_REMOTE_%s' % remote] = remote_to_string(remotes[remote])
+                test.environment.update(remotes_env)
 
             # Add it to the queue
             tests.append(test)
