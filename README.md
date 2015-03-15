@@ -1,6 +1,8 @@
 Lift Integration-Functional Testing - A meta test framework
 ===========================================================
 
+[![Build Status](https://travis-ci.org/Malizor/lift.svg?branch=master)](https://travis-ci.org/Malizor/lift)
+
 Usually, there is not much to discuss when writing unit tests.  
 They have to use the same programming language as the code they are testing
 and most languages have a set of dedicated test frameworks that you may chose from.
