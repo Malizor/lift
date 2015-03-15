@@ -27,12 +27,16 @@ from setuptools import setup, find_packages
 import lift
 
 
+data_files = []
+
+
 class MyBuild(build):
     """Customized build command - build manpages."""
     def run(self):
         try:
             print('Generating the manpage...')
             subprocess.call(['rst2man', 'doc/lift.rst', 'doc/lift.1'])
+            data_files.append(('/usr/share/man/man1/', ['doc/lift.1']))
         except OSError:
             print('Warning: rst2man was not found, skipping the manpage generation.')
         build.run(self)
@@ -50,7 +54,7 @@ setup(
     packages=find_packages(),
     scripts=['bin/lift'],
     test_suite='tests',
-    data_files=[('/usr/share/man/man1/', ['doc/lift.1'])],
+    data_files=data_files,
     cmdclass={'build': MyBuild},
     classifiers=[
         'Operating System :: Unix',
