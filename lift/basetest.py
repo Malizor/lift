@@ -184,9 +184,11 @@ class BaseTest(object):
                     and writable.
             """
             def actual_copy_output(infile, *outfiles):
-                for line in iter(infile.readline, ''):
+                for line in iter(infile.readline, b''):
                     if isinstance(line, bytes):
                         line = line.decode('utf8')
+                    elif line == u'':  # ...and if we did not read bytes
+                        break  # another sentinel, as b'' != u''
                     for f in outfiles:
                         f.write(line)
                 infile.close()

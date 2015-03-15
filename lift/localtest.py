@@ -72,7 +72,8 @@ class LocalTest(BaseTest):
             self._process = Popen(args,
                                   stdout=PIPE,
                                   stderr=STDOUT,
-                                  env=self.environment)
+                                  env=self.environment,
+                                  bufsize=0)
         except OSError as exc:
             return u'Failed to launch command `%s`: %s' % (args, exc)
         return self._process.stdout
