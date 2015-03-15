@@ -51,7 +51,7 @@ def parse():
     parser.add_argument('-d', '--detailed-summary', action='store_true',
                         help='Print the output of failed test in the final'
                         ' summary')
-    parser.add_argument('-r', '--regex', action='store_true',
+    parser.add_argument('--regex', action='store_true',
                         help='Process test_expression as standard Python regex')
     parser.add_argument('--no-upper-inheritance', action='store_true',
                         help='Do not load remotes/environment from upper level'

@@ -50,7 +50,7 @@ OPTIONS
   Disable colored output.
   Maybe useful, for example if colors interfere with your term.
 
-**-r**, **--regex**
+**--regex**
   Process *TEST* strings as standard Python regex.
   See below for more information.
 
