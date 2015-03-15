@@ -73,7 +73,7 @@ class LocalTest(BaseTest):
                                   env=self.environment,
                                   bufsize=0)
         except OSError as exc:
-            return u'Failed to launch command `%s`: %s' % (args, exc)
+            return 'Failed to launch command `%s`: %s' % (args, exc)
         return self._process.stdout
 
     def wait_command_completion(self):

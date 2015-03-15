@@ -95,7 +95,7 @@ class LocalTestTestCase(unittest.TestCase):
         cur_dir = os.path.dirname(os.path.realpath(__file__))
 
         expected_return_code = 0
-        expected_output = u'foobarééé\n'
+        expected_output = 'foobarééé\n'
 
         test = LocalTest('simple',
                          './my_script.sh',
