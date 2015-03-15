@@ -93,11 +93,13 @@ def remote_to_string(remote):
     else:
         return '%s@%s' % (remote['username'], remote['host'])
 
-def load_upper_inheritance(directory_path):
+def load_upper_inheritance(directory_path, preset_remotes):
     """Look for and load remotes/environment from upper level lift.yaml files
 
+    @preset_remotes is a dict of remotes that should be set but not overridden.
     Returns remotes and environment to inherit from in directory_path.
     """
+
     remotes = {}
     environment = {}
 
@@ -118,19 +120,22 @@ def load_upper_inheritance(directory_path):
         try:
             _, remotes, environment = load_config_file(lift_file,
                                                        remotes,
-                                                       environment)
+                                                       environment,
+                                                       preset_remotes)
         except InvalidDescriptionFile as e:
             sys.exit('%s is not a valid description file: %s' % (lift_file, e))
 
     return remotes, environment
 
-def load_config_file(yaml_path, remotes, environment):
+def load_config_file(yaml_path, remotes, environment, preset_remotes):
     """Load a test-suite description file
 
     Parsed remotes and environment are merged with the provided parameters
     (inheritance).
+    @preset_remotes is a dict of remotes that should be set but not overridden.
     Returns a list of run-able tests and the new remotes and environment dicts.
     """
+    remotes.update(preset_remotes)
 
     with open(yaml_path) as config_file:
         conf = yaml.load(config_file)
@@ -166,6 +171,8 @@ def load_config_file(yaml_path, remotes, environment):
             else:
                 raise InvalidDescriptionFile('Unknown section in settings: %s'
                                              % item)
+
+    remotes.update(preset_remotes)  # if a preset remote was overridden
 
     for section in conf:
         if section == 'settings':

@@ -65,6 +65,13 @@ OPTIONS
   Specify the root folder in which tests will be looked for.
   By default, use the current working directory.
 
+**-r** *REMOTE*, **--remote** *REMOTE*
+  Define a remote. The value should be in the following form:
+  *REMOTENAME=USERNAME:PASSWORD@HOST*. Note that the PASSWORD field (along with
+  the ":" separator) is optional if SSH keys are properly set. This option can
+  be used multiple times to define multiple remotes.
+  Remotes defined via this option supersede those defined via lift.yaml files.
+
 
 RUN SPECIFIC TESTS
 ==================

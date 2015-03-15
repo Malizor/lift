@@ -47,7 +47,7 @@ class LoadUpperInheritanceTestCase(unittest.TestCase):
                                  'tests_resources', 'valid')
         self.assertTrue(os.path.isdir(directory), '%s does not exist!' % directory)
 
-        remotes, environment = load_upper_inheritance(directory)
+        remotes, environment = load_upper_inheritance(directory, {})
         self.assertEqual(remotes, {},
                          'Remotes: inherited %s instead of nothing'
                          % str(remotes))
@@ -67,7 +67,7 @@ class LoadUpperInheritanceTestCase(unittest.TestCase):
                                          ('username', 'root'),
                                          ('password', 'foobar')])}
         expected_environment = {'MY_ENV_VAR2': 'bar', 'MY_ENV_VAR1': 'foo'}
-        remotes, environment = load_upper_inheritance(directory)
+        remotes, environment = load_upper_inheritance(directory, {})
         self.assertEqual(remotes, expected_remotes,
                          'Remotes: inherited %s instead of %s'
                          % (str(remotes), str(expected_remotes)))
@@ -92,7 +92,7 @@ class LoadUpperInheritanceTestCase(unittest.TestCase):
         expected_environment = {'MY_ENV_VAR1': 'foo',
                                 'MY_ENV_VAR2': 'not_bar',
                                 'MY_ENV_VAR3': 'foobar'}
-        remotes, environment = load_upper_inheritance(directory)
+        remotes, environment = load_upper_inheritance(directory, {})
         self.assertEqual(remotes, expected_remotes,
                          'Remotes: inherited %s instead of %s'
                          % (str(remotes), str(expected_remotes)))
@@ -115,7 +115,7 @@ class LoadConfigFileTestCase(unittest.TestCase):
 
         self.assertTrue(os.path.isfile(path), '%s does not exist!' % path)
         with self.assertRaisesRegexp(InvalidDescriptionFile, 'Unknown section'):
-            load_config_file(path, {}, {})
+            load_config_file(path, {}, {}, {})
 
     def test_no_command(self):
         """Check that a proper exception is raised"""
@@ -124,7 +124,7 @@ class LoadConfigFileTestCase(unittest.TestCase):
 
         self.assertTrue(os.path.isfile(path), '%s does not exist!' % path)
         with self.assertRaisesRegexp(InvalidDescriptionFile, 'No command defined'):
-            load_config_file(path, {}, {})
+            load_config_file(path, {}, {}, {})
 
     def test_duplicated_test(self):
         """Check that a proper exception is raised"""
@@ -133,7 +133,7 @@ class LoadConfigFileTestCase(unittest.TestCase):
 
         self.assertTrue(os.path.isfile(path), '%s does not exist!' % path)
         with self.assertRaisesRegexp(InvalidDescriptionFile, 'Duplicated test'):
-            load_config_file(path, {}, {})
+            load_config_file(path, {}, {}, {})
 
     def test_unknown_remote(self):
         """Check that a proper exception is raised"""
@@ -142,7 +142,7 @@ class LoadConfigFileTestCase(unittest.TestCase):
 
         self.assertTrue(os.path.isfile(path), '%s does not exist!' % path)
         with self.assertRaisesRegexp(InvalidDescriptionFile, 'Unknown remote'):
-            load_config_file(path, {}, {})
+            load_config_file(path, {}, {}, {})
 
     def test_load(self):
         """Check a load, without external inheritance"""
@@ -175,7 +175,7 @@ class LoadConfigFileTestCase(unittest.TestCase):
                                                   'MY_ENV_VAR2': 'edit_bar',
                                                   'MY_VAR': 'content'})]
 
-        tests, remotes, environment = load_config_file(path, {}, {})
+        tests, remotes, environment = load_config_file(path, {}, {}, {})
 
         self.assertEqual(remotes, expected_remotes,
                          'Remotes: inherited %s instead of %s'
@@ -228,7 +228,8 @@ class LoadConfigFileTestCase(unittest.TestCase):
                                                         OrderedDict([('host', 'example.org'),
                                                                      ('username', 'root'),
                                                                      ('password', 'barfoo')])},
-                                                       {'MY_ENV_VAR3': 'foobar'})
+                                                       {'MY_ENV_VAR3': 'foobar'},
+                                                       {})
 
         self.assertEqual(remotes, expected_remotes,
                          'Remotes: inherited %s instead of %s'

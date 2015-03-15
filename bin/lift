@@ -28,18 +28,29 @@ import argparse
 
 import lift
 from lift.exception import InvalidDescriptionFile
-from lift.loader import load_config_file, load_upper_inheritance
+from lift.loader import (load_config_file,
+                         load_upper_inheritance,
+                         string_to_remote,
+                         remote_to_string)
 
 
 def parse():
     """Command line argument parsing"""
 
     def is_dir(parser, path):
-        """Additional type checker for argparse"""
+        """Additional type checker for argparse, validate a directory path"""
         if not os.path.isdir(path):
             parser.error('%s: no such directory.' % path)
         else:
             return path
+
+    def is_remote(parser, rstring):
+        """Additional type checker for argparse, validate a remote string"""
+        res = string_to_remote(rstring)
+        if res is None:
+            parser.error('%s is not a valid remote string.' % rstring)
+        else:
+            return res
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-V', '--version', action='version',
@@ -60,6 +71,15 @@ def parse():
                         type=lambda p: is_dir(parser, p), default='.',
                         help='Specify the root folder in which tests will be '
                         'looked for (default to the current working directory)')
+    parser.add_argument('-r', '--remote',
+                        type=lambda p: is_remote(parser, p), action='append',
+                        help='Define a remote. The value should be in the '
+                        'following form: "REMOTENAME=USERNAME:PASSWORD@HOST". '
+                        'Note that the PASSWORD field (along with the ":" '
+                        'separator) is optional if SSH keys are properly set. '
+                        'This option can be used multiple times to define '
+                        'multiple remotes. Remotes defined via this option '
+                        'supersede those defined via lift.yaml files.')
     parser.add_argument('test_expression', nargs='*',
                         help='Specify tests to run. By default, all discovered'
                         ' tests are ran. '
@@ -80,6 +100,11 @@ if __name__ != '__main__':
 # Parse arguments
 args = parse()
 
+if args.remote is not None:
+    preset_remotes = dict(args.remote)
+else:
+    preset_remotes = {}
+
 # Do we have a description file to parse?
 if not os.path.isfile(os.path.join(args.folder, 'lift.yaml')):
     sys.exit('No lift.yaml file found in this folder.')
@@ -89,7 +114,7 @@ mapping = []
 
 # Load remotes/environment from upper level lift.yaml files
 if not args.no_upper_inheritance:
-    remotes, environment = load_upper_inheritance(args.folder)
+    remotes, environment = load_upper_inheritance(args.folder, preset_remotes)
 else:
     remotes = {}
     environment = {}
@@ -116,7 +141,8 @@ for directory, _, _ in os.walk(args.folder):
     try:
         tests, remotes, environment = load_config_file(os.path.join(directory, 'lift.yaml'),
                                                        remotes,
-                                                       environment)
+                                                       environment,
+                                                       preset_remotes)
         mapping.append({'dir': directory,
                         'remotes': remotes,
                         'environment': environment})
