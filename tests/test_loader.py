@@ -55,7 +55,6 @@ class LoadUpperInheritanceTestCase(unittest.TestCase):
                          'Environment: inherited %s instead of nothing'
                          % str(environment))
 
-
     def test_upper_inheritance(self):
         """Check the upper settings inheritance with 1 depth level"""
         directory = os.path.join(os.path.dirname(os.path.realpath(__file__)),
@@ -199,6 +198,53 @@ class LoadConfigFileTestCase(unittest.TestCase):
                                                   'MY_VAR': 'content'})]
 
         tests, remotes, environment = load_config_file(path, {}, {}, {})
+
+        self.assertEqual(remotes, expected_remotes,
+                         'Remotes: inherited %s instead of %s'
+                         % (str(remotes), str(expected_remotes)))
+        self.assertEqual(environment, expected_environment,
+                         'Environment: inherited %s instead of %s'
+                         % (str(environment), str(expected_environment)))
+        self.assertEqual(tests, expected_tests,
+                         'Expected and parsed tests are not the same')
+
+    def test_load_remotes_in_env(self):
+        """Check a load with the option to put remotes in tests environment"""
+        path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                            'tests_resources', 'valid', 'lift.yaml')
+
+        self.assertTrue(os.path.isfile(path), '%s does not exist!' % path)
+
+        expected_remotes = {'my_remote':
+                            OrderedDict([('host', 'example.com'),
+                                         ('username', 'root'),
+                                         ('password', 'foobar')])}
+
+        expected_environment = {'MY_ENV_VAR1': 'foo',
+                                'MY_ENV_VAR2': 'bar'}
+
+        expected_tests = [LocalTest('ping', 'sleep 1',
+                                    directory=os.path.dirname(path),
+                                    expected_return_code=0,
+                                    timeout=10,
+                                    environment={'MY_ENV_VAR1': 'foo',
+                                                 'MY_ENV_VAR2': 'bar',
+                                                 'LIFT_REMOTE_my_remote':
+                                                 'root:foobar@example.com'}),
+                          RemoteTest('remote_env_with_resource',
+                                     'sh test/test.sh',
+                                     expected_remotes['my_remote'],
+                                     resources=['test/'],
+                                     directory=os.path.dirname(path),
+                                     expected_return_code=0,
+                                     timeout=2,
+                                     environment={'MY_ENV_VAR1': 'foo',
+                                                  'MY_ENV_VAR2': 'edit_bar',
+                                                  'MY_VAR': 'content',
+                                                  'LIFT_REMOTE_my_remote':
+                                                  'root:foobar@example.com'})]
+
+        tests, remotes, environment = load_config_file(path, {}, {}, {}, True)
 
         self.assertEqual(remotes, expected_remotes,
                          'Remotes: inherited %s instead of %s'
