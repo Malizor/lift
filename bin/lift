@@ -30,8 +30,7 @@ import lift
 from lift.exception import InvalidDescriptionFile
 from lift.loader import (load_config_file,
                          load_upper_inheritance,
-                         string_to_remote,
-                         remote_to_string)
+                         string_to_remote)
 
 
 def parse():
