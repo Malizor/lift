@@ -1,5 +1,5 @@
 # LIFT Integration-Functional Testing - A meta test framework
-# Copyright © 2014 SmartJog S.A
+# Copyright © 2014-2015 Arkena S.A and Nicolas Delvaux
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
