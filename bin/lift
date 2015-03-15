@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
 
 # LIFT Integration-Functional Testing - A meta test framework
 # Copyright © 2014 SmartJog S.A
