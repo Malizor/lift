@@ -230,4 +230,3 @@ if all_failed_tests:
     sys.exit(1)
 else:
     print('Congratulation! \o/\n')
-

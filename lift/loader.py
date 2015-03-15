@@ -33,12 +33,14 @@ def dict_representer(dumper, data):
     return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
                                     data.items())
 
+
 def dict_constructor(loader, node):
     return OrderedDict(loader.construct_pairs(node))
 
 yaml.add_representer(OrderedDict, dict_representer)
 yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
                      dict_constructor)
+
 
 def string_to_remote(string):
     """Return the name and the remote dictionary matching the input string.
@@ -69,6 +71,7 @@ def string_to_remote(string):
 
     return name, remote
 
+
 def remote_to_string(remote):
     """Return a string matching the input remote dictionary
 
@@ -90,6 +93,7 @@ def remote_to_string(remote):
                              remote['host'])
     else:
         return '%s@%s' % (remote['username'], remote['host'])
+
 
 def load_upper_inheritance(directory_path, preset_remotes):
     """Look for and load remotes/environment from upper level lift.yaml files
@@ -125,6 +129,7 @@ def load_upper_inheritance(directory_path, preset_remotes):
 
     return remotes, environment
 
+
 def load_config_file(yaml_path, remotes, environment, preset_remotes,
                      remotes_in_env=False):
     """Load a test-suite description file
@@ -153,7 +158,6 @@ def load_config_file(yaml_path, remotes, environment, preset_remotes,
                 if name in ('test', 'define', 'complex', 'settings'):
                     raise InvalidDescriptionFile('Hosts definition: "%s" '
                                                  'is a reserved word' % name)
-
 
                 remotes[name] = conf['settings'][item]
                 # Does the host definition contain all needed fields?
