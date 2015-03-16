@@ -1,0 +1,2 @@
+include COPYING Changelog README.md
+recursive-include doc *.rst
