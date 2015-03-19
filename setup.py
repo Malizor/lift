@@ -40,7 +40,8 @@ class MyBuild(build):
             print('Warning: rst2man was not found, skipping the manpage generation.')
         build.run(self)
 
-ldesc = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
+ldesc = open(os.path.join(os.path.dirname(__file__), 'README.md'),
+             encoding='utf8').read()
 
 setup(
     name='lift',
