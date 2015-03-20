@@ -1,6 +1,6 @@
 # This is an example lift.yaml file.
 # The whole 'example' folder can be used as a functional test suite for lift,
-# provided that you re-define the remotes to an existing target.
+# provided that you re-define remotes to existing targets.
 
 # The settings section allow you to define remotes and environment variables.
 # Settings are inherited in the sub-folders of the test suite.
