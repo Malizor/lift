@@ -1,0 +1,5 @@
+lift (2.0.0-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Nicolas Delvaux <contact@nicolas-delvaux.org>  Sun, 15 Mar 2015 23:22:43 +0100

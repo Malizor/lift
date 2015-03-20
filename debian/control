@@ -1,0 +1,33 @@
+Source: lift
+Section: devel
+Priority: optional
+Maintainer: Nicolas Delvaux <contact@nicolas-delvaux.org>
+Build-Depends: debhelper (>= 9),
+               python3,
+               python3-yaml,
+               python3-paramiko,
+               python3-docutils,
+               python3-setuptools
+Standards-Version: 3.9.5
+Homepage: https://github.com/Malizor/lift
+
+Package: lift
+Architecture: all
+Depends: ${python3:Depends},
+         ${misc:Depends}
+Description: Integration and functional testing framework
+ Lift provides an integration/functional test platform which handles executable
+ tests easily and generically.
+ .
+  * Lift only deals with executables and their return code
+    - A particular test can be written in the language that fit it the most
+  * Test declaration in a simple YAML syntax
+    - No need to learn a programming language to integrate a test in a suite
+  * Easily declare a test as running locally or on a remote machine
+  * Remote tests: upload needed assets automatically and cleanup afterward
+  * Naturally organize a test suite in multiple sub-folders/sub-test suites
+  * Easily run a sub-test suite or specific tests from the command line
+  * Pass environment variables to tests
+  * Inheritance of remotes and environment across sub-test suites
+    - For example, remotes can be defined in the top folder and used below
+  * Only one command to run all or specific tests: lift
