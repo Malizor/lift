@@ -53,7 +53,7 @@ setup(
     author='Nicolas Delvaux',
     author_email='nicolas.delvaux@arkena.com',
     license='GPL2+',
-    packages=find_packages(),
+    packages=find_packages(exclude=('tests',)),
     scripts=['bin/lift'],
     test_suite='tests',
     data_files=data_files,
