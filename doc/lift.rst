@@ -7,7 +7,7 @@ lift
 Run a Lift test suite
 ---------------------
 
-:Authors: Written an maintained by Nicolas Delvaux <nicolas.delvaux@arkena.com>
+:Authors: Written an maintained by Nicolas Delvaux <contact@nicolas-delvaux.org>
 :Version: 2.0.0
 :Date: |date|
 :Copyright: GPL2+
@@ -17,12 +17,12 @@ Run a Lift test suite
 .. |date| date::
 
 
-SYNOPSIS
+Synopsis
 ========
 
 lift [*OPTION*]... [*TEST*]...
 
-DESCRIPTION
+Description
 ===========
 
 The lift command runs all or parts of a Lift test suite.
@@ -31,7 +31,7 @@ directory and its sub-directories.
 
 Lift stands for Lift Integration-Functional Testing.
 
-OPTIONS
+Options
 =======
 
 **-h**, **--help**
@@ -81,7 +81,7 @@ OPTIONS
   Remotes defined via this option supersede those defined via lift.yaml files.
 
 
-RUN SPECIFIC TESTS
+Run specific tests
 ==================
 
 You can select specific tests to run directly on the command line.
@@ -96,3 +96,7 @@ See http://docs.python.org/library/re.html for more information on the Python
 regex syntax.
 
 
+See also
+========
+
+For the test suite definition, see **lift.yaml** (1) 

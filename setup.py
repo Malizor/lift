@@ -33,9 +33,11 @@ class MyBuild(build):
     """Customized build command - build manpages."""
     def run(self):
         try:
-            print('Generating the manpage...')
+            print('Generating manpages...')
             subprocess.call(['rst2man', 'doc/lift.rst', 'doc/lift.1'])
-            data_files.append(('/usr/share/man/man1/', ['doc/lift.1']))
+            subprocess.call(['rst2man', 'doc/lift.yaml.rst', 'doc/lift.yaml.1'])
+            data_files.append(('/usr/share/man/man1/', ['doc/lift.1',
+                                                        'doc/lift.yaml.1']))
         except OSError:
             print('Warning: rst2man was not found, skipping the manpage generation.')
         build.run(self)

@@ -38,6 +38,11 @@ tests easily and generically.
 * Only one command to run all or specific tests: `lift`
 
 
+### Documentation
+
+The `doc` folder should contain everything you need.
+
+
 ### Example
 
 For a fully commented example of a lift test suite (which can also be seen as
