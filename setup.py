@@ -52,16 +52,22 @@ setup(
     long_description=ldesc,
     author='Nicolas Delvaux',
     author_email='nicolas.delvaux@arkena.com',
+    url='https://github.com/Malizor/lift',
+    download_url = 'https://github.com/Malizor/lift/tarball/%s' % lift.version,
     license='GPL2+',
     packages=find_packages(exclude=('tests',)),
     scripts=['bin/lift'],
     test_suite='tests',
     data_files=data_files,
     cmdclass={'build': MyBuild},
-    classifiers=[
-        'Operating System :: Unix',
-        'Programming Language :: Python',
-    ],
     setup_requires=['docutils'],
     install_requires=['paramiko', 'pyyaml'],
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Operating System :: Unix',
+        'Programming Language :: Python :: 3',
+        'Environment :: Console',
+    ],
+    keywords='test testing'
 )
