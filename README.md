@@ -18,47 +18,52 @@ Currently, most projects seem to have either multiple functional/integration
 test suites (re-using different unit testing frameworks) or internal solutions
 to group all the tests executable together in a more or less clean way.
 
-Lift provides an integration/functional test platform which handle *executable*
+Lift provides an integration/functional test platform which handles *executable*
 tests easily and generically.  
 
 
 ### Features
 
 * Lift only deals with *executables* and their return code  
-  → write your tests in whatever form you want to
+  → A particular test can be written in the language that fit it the most
 * Test declaration in a simple YAML syntax  
-  → no need to learn a programming language to integrate your test in a suite
+  → No need to learn a programming language to integrate a test in a suite
 * Easily declare a test as running locally or on a remote machine
-* Remote tests: auto upload of your needed assets and cleanup afterward
-* Organize your test suite in multiple sub-folders/sub-test suites
+* Remote tests: upload needed assets automatically and cleanup afterward
+* Naturally organize a test suite in multiple sub-folders/sub-test suites
 * Easily run a sub-test suite or specific tests from the command line
-* Pass environment variables to your tests
+* Pass environment variables to tests
 * Inheritance of remotes and environment across sub-test suites  
-  → For example, you can define all your remotes in the top folder and use them below
+  → For example, remotes can be defined in the top folder and used below
 * Only one command to run all or specific tests: `lift`
 
 
 ### Documentation
 
-The `doc` folder should contain everything you need.
+The `doc` folder contains man pages.
 
 
 ### Example
 
 For a fully commented example of a lift test suite (which can also be seen as
-a functional test suite for lift itself), see the `example` folder.
+a functional test suite for Lift itself), see the `example` folder.
 
 
 ### Installation
 
-Just use `sudo python3 setup.py install`
+Use `sudo python3 setup.py install`
 
 ##### Dependencies
 
 * Python 3
 * python3-yaml
 * python3-paramiko
-* python3-docutils (for the man page)
+* python3-docutils (for man pages)
+
+
+### Home page
+
+https://github.com/Malizor/lift
 
 
 ### License
