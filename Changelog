@@ -1,8 +1,9 @@
-Version 2.0.0
+Version 2.0.0 Released on 2015/03/25
 
 	* Port to Python3, drop support for Python2
 	* Allow to define remotes on the command line via the '--remote' option
 	* Add the '--put-remotes-in-environment' option
+	* Add a proper documentation for lift.yaml files
 	* Code cleanup
 	* Some small fixes
 
