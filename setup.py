@@ -33,7 +33,7 @@ class MyBuild(build):
     """Customized build command - build manpages."""
     def run(self):
         try:
-            print('Generating manpages...')
+            print('Generating manpages…')
             subprocess.call(['rst2man', 'doc/lift.rst', 'doc/lift.1'])
             subprocess.call(['rst2man', 'doc/lift.yaml.rst', 'doc/lift.yaml.1'])
             data_files.append(('/usr/share/man/man1/', ['doc/lift.1',
@@ -42,18 +42,18 @@ class MyBuild(build):
             print('Warning: rst2man was not found, skipping the manpage generation.')
         build.run(self)
 
-ldesc = open(os.path.join(os.path.dirname(__file__), 'README.md'),
+LDESC = open(os.path.join(os.path.dirname(__file__), 'README.md'),
              encoding='utf8').read()
 
 setup(
     name='lift',
     version=lift.version,
     description='High level test framework',
-    long_description=ldesc,
+    long_description=LDESC,
     author='Nicolas Delvaux',
     author_email='nicolas.delvaux@arkena.com',
     url='https://github.com/Malizor/lift',
-    download_url = 'https://github.com/Malizor/lift/tarball/%s' % lift.version,
+    download_url='https://github.com/Malizor/lift/tarball/%s' % lift.version,
     license='GPL2+',
     packages=find_packages(exclude=('tests',)),
     scripts=['bin/lift'],
