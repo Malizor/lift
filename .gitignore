@@ -1,5 +1,7 @@
 *.pyc
 lift.egg-info
 lift.1
+lift.yaml.1
 build
 dist
+.eggs
