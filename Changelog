@@ -1,6 +1,7 @@
 Version 2.0.1~dev
 
 	* Increase yaml loading safety
+	* Clean built manpages when running `./setup.py clean`
 
 Version 2.0.0 Released on 2015/03/25
 

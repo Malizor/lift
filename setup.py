@@ -21,6 +21,7 @@
 import os
 import subprocess
 from distutils.command.build import build
+from distutils.command.clean import clean
 from setuptools import setup, find_packages
 
 import lift
@@ -42,6 +43,16 @@ class MyBuild(build):
             print('Warning: rst2man was not found, skipping the manpage generation.')
         build.run(self)
 
+
+class MyClean(clean):
+    """Customized clean command - remove built manpages."""
+    def run(self):
+        for page in {'doc/lift.1', 'doc/lift.yaml.1'}:
+            if os.path.isfile(page):
+                os.remove(page)
+        clean.run(self)
+
+
 LDESC = open(os.path.join(os.path.dirname(__file__), 'README.md'),
              encoding='utf8').read()
 
@@ -59,7 +70,7 @@ setup(
     scripts=['bin/lift'],
     test_suite='tests',
     data_files=data_files,
-    cmdclass={'build': MyBuild},
+    cmdclass={'build': MyBuild, 'clean': MyClean},
     setup_requires=['docutils'],
     install_requires=['paramiko', 'pyyaml'],
     classifiers=[
