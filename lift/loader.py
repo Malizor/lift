@@ -29,17 +29,18 @@ from lift.exception import InvalidDescriptionFile
 
 
 # Tune the yaml module to use an OrderedDict (keep tests ordering)
-def dict_representer(dumper, data):
-    return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-                                    data.items())
+def ordered_load(stream):
+    class OrderedSafeLoader(yaml.SafeLoader):
+        pass
 
+    def construct_mapping(loader, node):
+        loader.flatten_mapping(node)
+        return OrderedDict(loader.construct_pairs(node))
 
-def dict_constructor(loader, node):
-    return OrderedDict(loader.construct_pairs(node))
-
-yaml.add_representer(OrderedDict, dict_representer)
-yaml.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-                     dict_constructor)
+    OrderedSafeLoader.add_constructor(
+        yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+        construct_mapping)
+    return yaml.load(stream, OrderedSafeLoader)
 
 
 def string_to_remote(string):
@@ -142,7 +143,7 @@ def load_config_file(yaml_path, remotes, environment, preset_remotes,
     remotes.update(preset_remotes)
 
     with open(yaml_path) as config_file:
-        conf = yaml.safe_load(config_file)
+        conf = ordered_load(config_file)
 
     # Handle empty files
     if conf is None:
