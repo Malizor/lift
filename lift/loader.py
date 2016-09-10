@@ -142,7 +142,7 @@ def load_config_file(yaml_path, remotes, environment, preset_remotes,
     remotes.update(preset_remotes)
 
     with open(yaml_path) as config_file:
-        conf = yaml.load(config_file)
+        conf = yaml.safe_load(config_file)
 
     # Handle empty files
     if conf is None:
