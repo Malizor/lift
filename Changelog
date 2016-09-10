@@ -15,7 +15,7 @@ Version 1.5.0 Released on 2015/03/01
 
 	* Tests now stream their output to stdout as they run
 	* Unicode handling improvements
-	* Add new '--quiet' and '--detailed-sumarry' options to the lift binary
+	* Add new '--quiet' and '--detailed-summary' options to the lift binary
 	* Remove the now useless '--verbose' option
 	* Progress toward Python3 support (not there yet)
 	* Various setup.py improvements
