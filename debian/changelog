@@ -1,3 +1,9 @@
+lift (2.0.1~dev-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Nicolas Delvaux <contact@nicolas-delvaux.org>  Sat, 10 Sep 2016 16:15:01 +0200
+
 lift (2.0.0-1) unstable; urgency=low
 
   * Initial release (Closes: #781189)
