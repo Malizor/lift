@@ -25,6 +25,8 @@ import re
 import sys
 import argparse
 
+from junit_xml import TestSuite
+
 import lift
 from lift.exception import InvalidDescriptionFile
 from lift.loader import (load_config_file,
@@ -130,6 +132,7 @@ else:
 # Initialize variables needed for the final summary
 tests_count = 0.0
 all_failed_tests = []
+test_suites = []
 
 for directory, _, _ in os.walk(args.folder):
     if not os.path.isfile(os.path.join(directory, 'lift.yaml')):
@@ -152,12 +155,14 @@ for directory, _, _ in os.walk(args.folder):
                                                        environment,
                                                        preset_remotes,
                                                        args.put_remotes_in_environment)
-        mapping.append({'dir': directory,
-                        'remotes': remotes,
-                        'environment': environment})
     except InvalidDescriptionFile as e:
         sys.exit('%s is not a valid description file: %s'
                  % (os.path.join(directory, 'lift.yaml'), e))
+
+    mapping.append({'dir': directory,
+                    'remotes': remotes,
+                    'environment': environment})
+    test_suites.append(TestSuite(directory, tests))
 
     for test in tests:
         test_string = '%s/%s' % (directory, test.name)
@@ -166,6 +171,7 @@ for directory, _, _ in os.walk(args.folder):
         if args.test_expression:
             if not args.regex and test_string not in args.test_expression:
                 # This is not one of the test the user explicitly asked for
+                test.add_skipped_info('Not selected from the command line.')
                 continue
             elif args.regex:
                 matched = False
@@ -174,6 +180,7 @@ for directory, _, _ in os.walk(args.folder):
                         matched = True
                         break
                 if not matched:
+                    test.add_skipped_info('Not selected from the command line.')
                     # test not matched, ignore it
                     continue
 
