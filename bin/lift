@@ -90,6 +90,12 @@ def parse():
                         'in the first place. Please do not use this option '
                         'if some of your binary tests can not be trusted to '
                         'keep these credentials for themselves.')
+    parser.add_argument('--with-xunit', action='store_true',
+                        help='Provide test results in the standard XUnit XML '
+                        'format.')
+    parser.add_argument('--xunit-file', default='./lift.xml',
+                        help='Path of the xml file to store the XUnit report '
+                        'in. Default is lift.xml in the working directory.')
     parser.add_argument('test_expression', nargs='*',
                         help='Specify tests to run. By default, all discovered'
                         ' tests are ran. '
@@ -232,6 +238,10 @@ success_count = tests_count - len(all_failed_tests)
 print('\nPass rate: %d/%d (%d%%)\n' % (success_count,
                                        tests_count,
                                        int(round((success_count / tests_count) * 100))))
+
+if args.with_xunit:
+    with open(args.xunit_file, 'w') as f:
+        TestSuite.to_file(f, test_suites, prettyprint=False)
 
 if all_failed_tests:
     sys.exit(1)

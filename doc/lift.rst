@@ -80,6 +80,13 @@ Options
   be used multiple times to define multiple remotes.
   Remotes defined via this option supersede those defined via lift.yaml files.
 
+**--with-xunit**
+  Provide test results in the standard XUnit XML format.
+
+**--xunit-file** *XUNIT_FILE*
+  Specify the path of the XML file to store the XUnit report in.
+  The default is *lift.xml* in the current working directory.
+
 
 Run specific tests
 ==================

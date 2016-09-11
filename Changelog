@@ -1,5 +1,6 @@
 Version 2.0.1~dev
 
+	* Add the "--with-xunit" and "--xunit-file" options
 	* Increase yaml loading safety
 	* Clean built manpages when running `./setup.py clean`
 
