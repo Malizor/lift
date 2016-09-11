@@ -7,6 +7,7 @@ Build-Depends: debhelper (>= 9),
                python3-yaml,
                python3-paramiko,
                python3-docutils,
+               python3-junit.xml,
                python3-setuptools
 Standards-Version: 3.9.6
 Homepage: https://github.com/Malizor/lift

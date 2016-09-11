@@ -59,6 +59,7 @@ Use `sudo python3 setup.py install`
 * python3-yaml
 * python3-paramiko
 * python3-docutils (for man pages)
+* python3-junit.xml
 
 
 ### Home page

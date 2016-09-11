@@ -23,8 +23,10 @@ import os
 from io import StringIO
 from threading import Thread
 
+from junit_xml import TestCase
 
-class BaseTest(object):
+
+class BaseTest(TestCase):
     """Base class for Lift tests
 
     Concrete tests types are supposed to inherit from this.
@@ -63,6 +65,8 @@ class BaseTest(object):
                 dynamically written. This is typically used to print on
                 sys.stdout or a file. None means 'nowhere'.
         """
+        super().__init__(name, classname='%s/%s' % (directory, name))
+
         self.name = name
         self.command = command
         self.directory = directory
@@ -79,6 +83,18 @@ class BaseTest(object):
         # Internal variables
         self._iothread = None
         self._output = StringIO()
+
+    def __getattribute__(self, name):
+        """Please junit_xml that wants an stdout attribute.
+
+        Our self.output combines both stdout and stderr, so it would be
+        confusing to rename it to just "stdout".
+        Just consider self.stdout an (hidden) alias of self.output.
+        """
+        if name == 'stdout':
+            return self.output
+        else:
+            return super().__getattribute__(name)
 
     def __repr__(self):
         return '%s<%s>' % (self.__class__.__name__, self.name)
@@ -151,6 +167,7 @@ class BaseTest(object):
                 self.streaming_output.write(msg)
             self._output.write(msg)
             self._finalize_output()
+            self.failure_message = msg
             return False
 
     def _run(self):
@@ -167,6 +184,7 @@ class BaseTest(object):
                 self.streaming_output.write(msg)
             self._output.write(msg)
             self._finalize_output()
+            self.failure_message = msg
             return False
 
         self.setup()
@@ -244,7 +262,12 @@ class BaseTest(object):
         os.chdir(orig_dir)
 
         self.finished = True
-        return self.return_code == self.expected_return_code
+        status = self.return_code == self.expected_return_code
+
+        if not status:
+            self.failure_message = 'Returned %s instead of %s' % (self.return_code,
+                                                                  self.expected_return_code)
+        return status
 
     def command_launch(self):
         """Launch the command and return the output stream without blocking

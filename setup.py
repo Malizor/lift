@@ -72,7 +72,7 @@ setup(
     data_files=data_files,
     cmdclass={'build': MyBuild, 'clean': MyClean},
     setup_requires=['docutils'],
-    install_requires=['paramiko', 'pyyaml'],
+    install_requires=['paramiko', 'pyyaml', 'junit-xml'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
