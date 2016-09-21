@@ -3,6 +3,7 @@ lift (2.0.1~dev-1) UNRELEASED; urgency=medium
   * New upstream release
   * Bump standards version to 3.9.8 (no change required)
   * Improve debian/copyright to please Lintian
+  * Simplify the packaging: use Pybuild
 
  -- Nicolas Delvaux <contact@nicolas-delvaux.org>  Sat, 10 Sep 2016 16:15:01 +0200
 
