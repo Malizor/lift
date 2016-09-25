@@ -36,6 +36,7 @@ tests easily and generically.
 * Inheritance of remotes and environment across sub-test suites  
   → For example, remotes can be defined in the top folder and used below
 * Only one command to run all or specific tests: `lift`
+* Export XUnit reports, for easy integration with Jenkins & friends
 
 
 ### Documentation
