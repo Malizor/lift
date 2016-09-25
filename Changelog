@@ -1,4 +1,4 @@
-Version 2.0.1~dev
+Version 2.5.0 Released on 2016/09/25
 
 	* Add the "--with-xunit" and "--xunit-file" options
 	* Increase yaml loading safety

@@ -8,7 +8,7 @@ Run a Lift test suite
 ---------------------
 
 :Authors: Written an maintained by Nicolas Delvaux <contact@nicolas-delvaux.org>
-:Version: 2.0.1~dev
+:Version: 2.5.0
 :Date: |date|
 :Copyright: GPL2+
 :Manual section: 1

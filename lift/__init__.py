@@ -20,4 +20,4 @@
 """lift module"""
 
 canonical_name = 'lift'
-version = '2.0.1~dev'
+version = '2.5.0'
