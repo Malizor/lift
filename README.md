@@ -55,7 +55,7 @@ Use `sudo python3 setup.py install`
 
 ##### Dependencies
 
-* Python 3
+* Python 3 (>= 3.3)
 * python3-yaml
 * python3-paramiko
 * python3-docutils (for man pages)
