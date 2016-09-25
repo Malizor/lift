@@ -4,6 +4,7 @@ lift (2.0.1~dev-1) UNRELEASED; urgency=medium
   * Bump standards version to 3.9.8 (no change required)
   * Improve debian/copyright to please Lintian
   * Simplify the packaging: use Pybuild
+  * Make the build reproducible (set the build date in manpages)
 
  -- Nicolas Delvaux <contact@nicolas-delvaux.org>  Sat, 10 Sep 2016 16:15:01 +0200
 
