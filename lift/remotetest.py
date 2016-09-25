@@ -94,6 +94,7 @@ class RemoteTest(BaseTest):
 
     def cleanup(self):
         self._ssh.exec_command('rm -rf %s' % self._remote_test_folder)
+        self._ssh.close()
 
     def command_launch(self):
         """Launch the command and return the output stream without blocking
