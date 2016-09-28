@@ -5,6 +5,7 @@ lift (2.5.0-1) unstable; urgency=medium
   * Improve debian/copyright to please Lintian
   * Simplify the packaging: use Pybuild
   * Make the build reproducible (set the build date in manpages)
+  * Bump the debian/watch version to 4 (no change required)
 
  -- Nicolas Delvaux <contact@nicolas-delvaux.org>  Sun, 25 Sep 2016 17:31:54 +0200
 
