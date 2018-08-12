@@ -45,12 +45,16 @@ class BaseTest(TestCase):
     Please refer to their individual docstrings.
     """
 
-    def __init__(self, name, command,
-                 directory='.',
-                 expected_return_code=0,
-                 timeout=0,
-                 environment={},
-                 streaming_output=None):
+    def __init__(
+        self,
+        name,
+        command,
+        directory=".",
+        expected_return_code=0,
+        timeout=0,
+        environment={},
+        streaming_output=None,
+    ):
         """Create a ready to run test object
 
         Args:
@@ -65,7 +69,7 @@ class BaseTest(TestCase):
                 dynamically written. This is typically used to print on
                 sys.stdout or a file. None means 'nowhere'.
         """
-        super().__init__(name, classname='%s/%s' % (directory, name))
+        super().__init__(name, classname="%s/%s" % (directory, name))
 
         self.name = name
         self.command = command
@@ -78,7 +82,7 @@ class BaseTest(TestCase):
         # Test result
         self.finished = False
         self.return_code = None
-        self.output = ''
+        self.output = ""
 
         # Internal variables
         self._iothread = None
@@ -91,20 +95,20 @@ class BaseTest(TestCase):
         confusing to rename it to just "stdout".
         Just consider self.stdout an (hidden) alias of self.output.
         """
-        if name == 'stdout':
+        if name == "stdout":
             return self.output
         else:
             return super().__getattribute__(name)
 
     def __repr__(self):
-        return '%s<%s>' % (self.__class__.__name__, self.name)
+        return "%s<%s>" % (self.__class__.__name__, self.name)
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
             return False
         for item in self.__dict__:
             # Do not compare private attributes
-            if item.startswith('_'):
+            if item.startswith("_"):
                 continue
             if self.__dict__[item] != other.__dict__[item]:
                 return False
@@ -161,7 +165,7 @@ class BaseTest(TestCase):
         try:
             return self._run()
         except Exception as exc:
-            msg = 'An exception was raised during the test execution:\n%s\n' % str(exc)
+            msg = "An exception was raised during the test execution:\n%s\n" % str(exc)
             if self.streaming_output is not None:
                 print(self.streaming_output)
                 self.streaming_output.write(msg)
@@ -179,7 +183,7 @@ class BaseTest(TestCase):
             orig_dir = os.getcwd()
             os.chdir(self.directory)
         except OSError as exc:
-            msg = '\n\n%s: %s\n' % (self.directory, exc)
+            msg = "\n\n%s: %s\n" % (self.directory, exc)
             if self.streaming_output is not None:
                 self.streaming_output.write(msg)
             self._output.write(msg)
@@ -199,15 +203,17 @@ class BaseTest(TestCase):
                 outfiles: One or multiple output files. They should be opened
                     and writable.
             """
+
             def actual_copy_output(infile, *outfiles):
-                for line in iter(infile.readline, b''):
+                for line in iter(infile.readline, b""):
                     if isinstance(line, bytes):
-                        line = line.decode('utf8')
-                    elif line == '':  # ...and if we did not read bytes
+                        line = line.decode("utf8")
+                    elif line == "":  # ...and if we did not read bytes
                         break  # another sentinel, as b'' != ''
                     for f in outfiles:
                         f.write(line)
                 infile.close()
+
             t = Thread(target=actual_copy_output, args=(infile,) + outfiles)
             t.daemon = True
             t.start()
@@ -221,7 +227,7 @@ class BaseTest(TestCase):
             out = self.command_launch()
             if isinstance(out, str):
                 # An error occurred
-                msg = '\nAn error occurred: %s' % out
+                msg = "\nAn error occurred: %s" % out
                 if self.streaming_output is not None:
                     self.streaming_output.write(msg)
                     self.streaming_output.flush()
@@ -229,12 +235,9 @@ class BaseTest(TestCase):
                 return
 
             if self.streaming_output is not None:
-                self._iothread = copy_output(out,
-                                             self.streaming_output,
-                                             self._output)
+                self._iothread = copy_output(out, self.streaming_output, self._output)
             else:
-                self._iothread = copy_output(out,
-                                             self._output)
+                self._iothread = copy_output(out, self._output)
 
             self.return_code = self.wait_command_completion()
 
@@ -249,7 +252,7 @@ class BaseTest(TestCase):
             self.interrupt_command()
             thread.join()
             self.return_code = 124  # same as the 'timeout' command
-            msg = '\n\nTest interrupted: timeout\n'
+            msg = "\n\nTest interrupted: timeout\n"
             if self.streaming_output is not None:
                 self.streaming_output.flush()
                 self.streaming_output.write(msg)
@@ -265,8 +268,10 @@ class BaseTest(TestCase):
         status = self.return_code == self.expected_return_code
 
         if not status:
-            self.failure_message = 'Returned %s instead of %s' % (self.return_code,
-                                                                  self.expected_return_code)
+            self.failure_message = "Returned %s instead of %s" % (
+                self.return_code,
+                self.expected_return_code,
+            )
         return status
 
     def command_launch(self):
@@ -278,7 +283,7 @@ class BaseTest(TestCase):
             The output stream of the command OR a string containing a message
             if the command launch failed.
         """
-        return 'Not implemented'
+        return "Not implemented"
 
     def wait_command_completion(self):
         """Block until the command completion

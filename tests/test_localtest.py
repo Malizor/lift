@@ -31,63 +31,83 @@ class LocalTestTestCase(unittest.TestCase):
         """Test a simple run"""
 
         expected_return_code = 0
-        expected_output = 'foobar\n'
+        expected_output = "foobar\n"
 
-        test = LocalTest('simple', 'echo foobar')
-        self.assertTrue(test.run(), 'The test should have succeded')
-        self.assertEqual(test.return_code, expected_return_code,
-                         'Test return code is %d instead of %d'
-                         % (test.return_code, expected_return_code))
-        self.assertEqual(test.output, expected_output,
-                         'Test output is %s instead of %s'
-                         % (test.output, expected_output))
+        test = LocalTest("simple", "echo foobar")
+        self.assertTrue(test.run(), "The test should have succeded")
+        self.assertEqual(
+            test.return_code,
+            expected_return_code,
+            "Test return code is %d instead of %d"
+            % (test.return_code, expected_return_code),
+        )
+        self.assertEqual(
+            test.output,
+            expected_output,
+            "Test output is %s instead of %s" % (test.output, expected_output),
+        )
 
     def test_run_fail(self):
         """Test if a test fail as it should"""
 
         expected_return_code = 1
-        expected_output = ''
+        expected_output = ""
 
-        test = LocalTest('simple', 'sh -c "exit 1"')
-        self.assertFalse(test.run(), 'The test should have failed')
-        self.assertEqual(test.return_code, expected_return_code,
-                         'Test return code is %d instead of %d'
-                         % (test.return_code, expected_return_code))
-        self.assertEqual(test.output, expected_output,
-                         'Test output is %s instead of %s'
-                         % (test.output, expected_output))
+        test = LocalTest("simple", 'sh -c "exit 1"')
+        self.assertFalse(test.run(), "The test should have failed")
+        self.assertEqual(
+            test.return_code,
+            expected_return_code,
+            "Test return code is %d instead of %d"
+            % (test.return_code, expected_return_code),
+        )
+        self.assertEqual(
+            test.output,
+            expected_output,
+            "Test output is %s instead of %s" % (test.output, expected_output),
+        )
 
     def test_timeout(self):
         """Test that the timeout mecanism works"""
 
         expected_return_code = 124
-        expected_output = '\n\nTest interrupted: timeout\n'
+        expected_output = "\n\nTest interrupted: timeout\n"
 
-        test = LocalTest('simple', 'sleep 10', timeout=1)
-        self.assertFalse(test.run(), 'The test should have failed')
-        self.assertEqual(test.return_code, expected_return_code,
-                         'Test return code is %d instead of %d'
-                         % (test.return_code, expected_return_code))
-        self.assertEqual(test.output, expected_output,
-                         'Test output is %s instead of %s'
-                         % (test.output, expected_output))
+        test = LocalTest("simple", "sleep 10", timeout=1)
+        self.assertFalse(test.run(), "The test should have failed")
+        self.assertEqual(
+            test.return_code,
+            expected_return_code,
+            "Test return code is %d instead of %d"
+            % (test.return_code, expected_return_code),
+        )
+        self.assertEqual(
+            test.output,
+            expected_output,
+            "Test output is %s instead of %s" % (test.output, expected_output),
+        )
 
     def test_run_with_environment(self):
         """Test that the environment is passed to the program"""
 
         expected_return_code = 0
-        expected_output = 'TEST\n'
+        expected_output = "TEST\n"
 
-        test = LocalTest('simple',
-                         'sh -c "echo $foobar"',
-                         environment={'foobar': 'TEST'})
-        self.assertTrue(test.run(), 'The test should have succeded')
-        self.assertEqual(test.return_code, expected_return_code,
-                         'Test return code is %d instead of %d'
-                         % (test.return_code, expected_return_code))
-        self.assertEqual(test.output, expected_output,
-                         'Test output is %s instead of %s'
-                         % (test.output, expected_output))
+        test = LocalTest(
+            "simple", 'sh -c "echo $foobar"', environment={"foobar": "TEST"}
+        )
+        self.assertTrue(test.run(), "The test should have succeded")
+        self.assertEqual(
+            test.return_code,
+            expected_return_code,
+            "Test return code is %d instead of %d"
+            % (test.return_code, expected_return_code),
+        )
+        self.assertEqual(
+            test.output,
+            expected_output,
+            "Test output is %s instead of %s" % (test.output, expected_output),
+        )
 
     def test_executable(self):
         """Test the directory switching and executable scripts"""
@@ -95,16 +115,23 @@ class LocalTestTestCase(unittest.TestCase):
         cur_dir = os.path.dirname(os.path.realpath(__file__))
 
         expected_return_code = 0
-        expected_output = 'foobarééé\n'
+        expected_output = "foobarééé\n"
 
-        test = LocalTest('simple',
-                         './my_script.sh',
-                         directory=os.path.join(cur_dir, 'tests_resources'))
+        test = LocalTest(
+            "simple",
+            "./my_script.sh",
+            directory=os.path.join(cur_dir, "tests_resources"),
+        )
 
-        self.assertTrue(test.run(), 'The test should have succeded')
-        self.assertEqual(test.return_code, expected_return_code,
-                         'Test return code is %d instead of %d'
-                         % (test.return_code, expected_return_code))
-        self.assertEqual(test.output, expected_output,
-                         'Test output is %s instead of %s'
-                         % (test.output, expected_output))
+        self.assertTrue(test.run(), "The test should have succeded")
+        self.assertEqual(
+            test.return_code,
+            expected_return_code,
+            "Test return code is %d instead of %d"
+            % (test.return_code, expected_return_code),
+        )
+        self.assertEqual(
+            test.output,
+            expected_output,
+            "Test output is %s instead of %s" % (test.output, expected_output),
+        )

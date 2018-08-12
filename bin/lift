@@ -29,9 +29,7 @@ from junit_xml import TestSuite
 
 import lift
 from lift.exception import InvalidDescriptionFile
-from lift.loader import (load_config_file,
-                         load_upper_inheritance,
-                         string_to_remote)
+from lift.loader import load_config_file, load_upper_inheritance, string_to_remote
 
 
 def parse():
@@ -40,7 +38,7 @@ def parse():
     def is_dir(parser, path):
         """Additional type checker for argparse, validate a directory path"""
         if not os.path.isdir(path):
-            parser.error('%s: no such directory.' % path)
+            parser.error("%s: no such directory." % path)
         else:
             return path
 
@@ -48,69 +46,100 @@ def parse():
         """Additional type checker for argparse, validate a remote string"""
         res = string_to_remote(rstring)
         if res is None:
-            parser.error('%s is not a valid remote string.' % rstring)
+            parser.error("%s is not a valid remote string." % rstring)
         else:
             return res
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-V', '--version', action='version',
-                        version=lift.version)
-    parser.add_argument('-n', '--no-color', action='store_true',
-                        help='Disable colored output')
-    parser.add_argument('-q', '--quiet', action='store_true',
-                        help='Do not print the output of tests as they run')
-    parser.add_argument('-d', '--detailed-summary', action='store_true',
-                        help='Print the output of failed test in the final'
-                        ' summary')
-    parser.add_argument('--regex', action='store_true',
-                        help='Process test_expression as standard Python regex')
-    parser.add_argument('--no-upper-inheritance', action='store_true',
-                        help='Do not load remotes/environment from upper level'
-                        ' lift.yaml files')
-    parser.add_argument('-f', '--folder',
-                        type=lambda p: is_dir(parser, p), default='.',
-                        help='Specify the root folder in which tests will be '
-                        'looked for (default to the current working directory)')
-    parser.add_argument('-r', '--remote',
-                        type=lambda p: is_remote(parser, p), action='append',
-                        help='Define a remote. The value should be in the '
-                        'following form: "REMOTENAME=USERNAME:PASSWORD@HOST". '
-                        'Note that the PASSWORD field (along with the ":" '
-                        'separator) is optional if SSH keys are properly set. '
-                        'This option can be used multiple times to define '
-                        'multiple remotes. Remotes defined via this option '
-                        'supersede those defined via lift.yaml files.')
-    parser.add_argument('--put-remotes-in-environment', action='store_true',
-                        help='All defined remotes will be passed as '
-                        'environment variables to tests. Variables will be '
-                        'in the following form: '
-                        '"LIFT_REMOTE_remotename=login:password@host". '
-                        'Note that the password (along with the ":" '
-                        'separator) will not be there if it was not defined '
-                        'in the first place. Please do not use this option '
-                        'if some of your binary tests can not be trusted to '
-                        'keep these credentials for themselves.')
-    parser.add_argument('--with-xunit', action='store_true',
-                        help='Provide test results in the standard XUnit XML '
-                        'format.')
-    parser.add_argument('--xunit-file', default='./lift.xml',
-                        help='Path of the xml file to store the XUnit report '
-                        'in. Default is lift.xml in the working directory.')
-    parser.add_argument('test_expression', nargs='*',
-                        help='Specify tests to run. By default, all discovered'
-                        ' tests are ran. '
-                        'You can use the same format as the one found in the'
-                        ' lift output, ie. "FOLDER/TEST_NAME". '
-                        'If you set the "--regex" option, expressions will be'
-                        ' matched as standard Python regex. For example, ".*foo"'
-                        ' will match all tests containing the word "foo". '
-                        'See http://docs.python.org/library/re.html for more '
-                        'information.')
+    parser.add_argument("-V", "--version", action="version", version=lift.version)
+    parser.add_argument(
+        "-n", "--no-color", action="store_true", help="Disable colored output"
+    )
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Do not print the output of tests as they run",
+    )
+    parser.add_argument(
+        "-d",
+        "--detailed-summary",
+        action="store_true",
+        help="Print the output of failed test in the final" " summary",
+    )
+    parser.add_argument(
+        "--regex",
+        action="store_true",
+        help="Process test_expression as standard Python regex",
+    )
+    parser.add_argument(
+        "--no-upper-inheritance",
+        action="store_true",
+        help="Do not load remotes/environment from upper level" " lift.yaml files",
+    )
+    parser.add_argument(
+        "-f",
+        "--folder",
+        type=lambda p: is_dir(parser, p),
+        default=".",
+        help="Specify the root folder in which tests will be "
+        "looked for (default to the current working directory)",
+    )
+    parser.add_argument(
+        "-r",
+        "--remote",
+        type=lambda p: is_remote(parser, p),
+        action="append",
+        help="Define a remote. The value should be in the "
+        'following form: "REMOTENAME=USERNAME:PASSWORD@HOST". '
+        'Note that the PASSWORD field (along with the ":" '
+        "separator) is optional if SSH keys are properly set. "
+        "This option can be used multiple times to define "
+        "multiple remotes. Remotes defined via this option "
+        "supersede those defined via lift.yaml files.",
+    )
+    parser.add_argument(
+        "--put-remotes-in-environment",
+        action="store_true",
+        help="All defined remotes will be passed as "
+        "environment variables to tests. Variables will be "
+        "in the following form: "
+        '"LIFT_REMOTE_remotename=login:password@host". '
+        'Note that the password (along with the ":" '
+        "separator) will not be there if it was not defined "
+        "in the first place. Please do not use this option "
+        "if some of your binary tests can not be trusted to "
+        "keep these credentials for themselves.",
+    )
+    parser.add_argument(
+        "--with-xunit",
+        action="store_true",
+        help="Provide test results in the standard XUnit XML " "format.",
+    )
+    parser.add_argument(
+        "--xunit-file",
+        default="./lift.xml",
+        help="Path of the xml file to store the XUnit report "
+        "in. Default is lift.xml in the working directory.",
+    )
+    parser.add_argument(
+        "test_expression",
+        nargs="*",
+        help="Specify tests to run. By default, all discovered"
+        " tests are ran. "
+        "You can use the same format as the one found in the"
+        ' lift output, ie. "FOLDER/TEST_NAME". '
+        'If you set the "--regex" option, expressions will be'
+        ' matched as standard Python regex. For example, ".*foo"'
+        ' will match all tests containing the word "foo". '
+        "See http://docs.python.org/library/re.html for more "
+        "information.",
+    )
     return parser.parse_args()
 
 
-if __name__ != '__main__':
-    sys.exit('The lift binary can only be executed.')
+if __name__ != "__main__":
+    sys.exit("The lift binary can only be executed.")
 
 
 # Parse arguments
@@ -122,8 +151,8 @@ else:
     preset_remotes = {}
 
 # Do we have a description file to parse?
-if not os.path.isfile(os.path.join(args.folder, 'lift.yaml')):
-    sys.exit('No lift.yaml file found in this folder.')
+if not os.path.isfile(os.path.join(args.folder, "lift.yaml")):
+    sys.exit("No lift.yaml file found in this folder.")
 
 # Folder mapping, used for remotes and environment inheritance
 mapping = []
@@ -141,43 +170,45 @@ all_failed_tests = []
 test_suites = []
 
 for directory, _, _ in os.walk(args.folder):
-    if not os.path.isfile(os.path.join(directory, 'lift.yaml')):
+    if not os.path.isfile(os.path.join(directory, "lift.yaml")):
         continue
 
     # Figures out the inheritance of remotes and environments
 
     # inherit from the closer known upper folder
     for ancestor in reversed(mapping):
-        if not directory.startswith(ancestor['dir']):
+        if not directory.startswith(ancestor["dir"]):
             continue
-        remotes = ancestor['remotes'].copy()
-        environment = ancestor['environment'].copy()
+        remotes = ancestor["remotes"].copy()
+        environment = ancestor["environment"].copy()
         break
 
     # Load the description file
     try:
-        tests, remotes, environment = load_config_file(os.path.join(directory, 'lift.yaml'),
-                                                       remotes,
-                                                       environment,
-                                                       preset_remotes,
-                                                       args.put_remotes_in_environment)
+        tests, remotes, environment = load_config_file(
+            os.path.join(directory, "lift.yaml"),
+            remotes,
+            environment,
+            preset_remotes,
+            args.put_remotes_in_environment,
+        )
     except InvalidDescriptionFile as e:
-        sys.exit('%s is not a valid description file: %s'
-                 % (os.path.join(directory, 'lift.yaml'), e))
+        sys.exit(
+            "%s is not a valid description file: %s"
+            % (os.path.join(directory, "lift.yaml"), e)
+        )
 
-    mapping.append({'dir': directory,
-                    'remotes': remotes,
-                    'environment': environment})
+    mapping.append({"dir": directory, "remotes": remotes, "environment": environment})
     test_suites.append(TestSuite(directory, tests))
 
     for test in tests:
-        test_string = '%s/%s' % (directory, test.name)
+        test_string = "%s/%s" % (directory, test.name)
 
         # Should we ignore this test?
         if args.test_expression:
             if not args.regex and test_string not in args.test_expression:
                 # This is not one of the test the user explicitly asked for
-                test.add_skipped_info('Not selected from the command line.')
+                test.add_skipped_info("Not selected from the command line.")
                 continue
             elif args.regex:
                 matched = False
@@ -186,12 +217,12 @@ for directory, _, _ in os.walk(args.folder):
                         matched = True
                         break
                 if not matched:
-                    test.add_skipped_info('Not selected from the command line.')
+                    test.add_skipped_info("Not selected from the command line.")
                     # test not matched, ignore it
                     continue
 
         tests_count += 1
-        print('\nTesting: {0:-<{1}}'.format(test_string + ' ', 71))
+        print("\nTesting: {0:-<{1}}".format(test_string + " ", 71))
         if not args.quiet:
             test.streaming_output = sys.stdout
 
@@ -199,51 +230,57 @@ for directory, _, _ in os.walk(args.folder):
         status = test.run()
         os.chdir(cwd)  # Tests may change directory and fail to cleanup
 
-        res_string = '\n%s  {0:>{1}}\n' % test_string
+        res_string = "\n%s  {0:>{1}}\n" % test_string
         if status:
             # TODO: align status according to output size
             if not args.no_color:
                 # Green
-                print('\nResult: \033[92mOK\033[0m')
+                print("\nResult: \033[92mOK\033[0m")
             else:
-                print('\nResult: OK')
+                print("\nResult: OK")
         else:
             all_failed_tests.append(test)
             if not args.no_color:
                 # Red
-                print('\nResult: \033[91mFAIL\033[0m')
+                print("\nResult: \033[91mFAIL\033[0m")
             else:
-                print('\nResult: FAIL')
+                print("\nResult: FAIL")
 
 # All tests were run, summary time
 if tests_count == 0:
-    sys.exit('No test was run!')
+    sys.exit("No test was run!")
 
-print('\nEnd of tests.')
+print("\nEnd of tests.")
 if all_failed_tests:
-    print('=' * 80)
-    print('\nSummary of failed tests:\n')
+    print("=" * 80)
+    print("\nSummary of failed tests:\n")
 for test in all_failed_tests:
     if test.return_code != test.expected_return_code:
-        print('\n%s/%s returned %s instead of %d\n' % (test.directory,
-                                                       test.name,
-                                                       str(test.return_code),
-                                                       test.expected_return_code))
+        print(
+            "\n%s/%s returned %s instead of %d\n"
+            % (
+                test.directory,
+                test.name,
+                str(test.return_code),
+                test.expected_return_code,
+            )
+        )
         if args.detailed_summary and test.output:
-            print('The output was:\n%s\n' % test.output)
+            print("The output was:\n%s\n" % test.output)
 
-        print('####')
+        print("####")
 
 success_count = tests_count - len(all_failed_tests)
-print('\nPass rate: %d/%d (%d%%)\n' % (success_count,
-                                       tests_count,
-                                       int(round((success_count / tests_count) * 100))))
+print(
+    "\nPass rate: %d/%d (%d%%)\n"
+    % (success_count, tests_count, int(round((success_count / tests_count) * 100)))
+)
 
 if args.with_xunit:
-    with open(args.xunit_file, 'w') as f:
+    with open(args.xunit_file, "w") as f:
         TestSuite.to_file(f, test_suites, prettyprint=False)
 
 if all_failed_tests:
     sys.exit(1)
 else:
-    print('Congratulation! \o/\n')
+    print("Congratulation! \o/\n")

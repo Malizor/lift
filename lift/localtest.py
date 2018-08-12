@@ -27,12 +27,17 @@ from lift.basetest import BaseTest
 
 class LocalTest(BaseTest):
     """Test as a local command execution"""
-    def __init__(self, name, command,
-                 directory='.',
-                 expected_return_code=0,
-                 timeout=0,
-                 environment={},
-                 streaming_output=None):
+
+    def __init__(
+        self,
+        name,
+        command,
+        directory=".",
+        expected_return_code=0,
+        timeout=0,
+        environment={},
+        streaming_output=None,
+    ):
         """Create a ready to run LocalTest object
 
         Args:
@@ -49,13 +54,15 @@ class LocalTest(BaseTest):
         """
         # This is the same as BaseTest constructor, except for a new internal
         # class variable
-        super(LocalTest, self).__init__(name,
-                                        command,
-                                        directory,
-                                        expected_return_code,
-                                        timeout,
-                                        environment,
-                                        streaming_output)
+        super(LocalTest, self).__init__(
+            name,
+            command,
+            directory,
+            expected_return_code,
+            timeout,
+            environment,
+            streaming_output,
+        )
         self._process = None
 
     def command_launch(self):
@@ -67,13 +74,11 @@ class LocalTest(BaseTest):
         """
         args = shlex.split(self.command)
         try:
-            self._process = Popen(args,
-                                  stdout=PIPE,
-                                  stderr=STDOUT,
-                                  env=self.environment,
-                                  bufsize=0)
+            self._process = Popen(
+                args, stdout=PIPE, stderr=STDOUT, env=self.environment, bufsize=0
+            )
         except OSError as exc:
-            return 'Failed to launch command `%s`: %s' % (args, exc)
+            return "Failed to launch command `%s`: %s" % (args, exc)
         return self._process.stdout
 
     def wait_command_completion(self):

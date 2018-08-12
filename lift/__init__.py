@@ -19,5 +19,5 @@
 
 """lift module"""
 
-canonical_name = 'lift'
-version = '2.5.0'
+canonical_name = "lift"
+version = "2.5.0"
