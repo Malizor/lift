@@ -3,9 +3,5 @@
 # Remove leftovers from tests
 export PYBUILD_AFTER_CLEAN=rm -rf "lift.egg-info"
 
-# Edit the build date in manpages to make the build reproducible
-export RELEASE_DATE=$(shell date -d "$(shell dpkg-parsechangelog -S Date)" -I)
-export PYBUILD_AFTER_BUILD=sed -i 's/[0-9]\+-[0-9]\+-[0-9]\+/$(RELEASE_DATE)/' doc/lift.1 doc/lift.yaml.1
-
 %:
 	dh $@ --with python3 --buildsystem=pybuild
