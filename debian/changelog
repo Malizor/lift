@@ -1,9 +1,10 @@
-lift (2.5.1-1) UNRELEASED; urgency=medium
+lift (2.5.1-1ubuntu1) UNRELEASED; urgency=medium
 
   * New upstream release
   * Really make the build reproducible (Closes: #1000897)
+  * Bump standards version to 4.6.0
 
- -- Nicolas Delvaux <contact@nicolas-delvaux.org>  Sat, 04 Dec 2021 16:47:11 +0100
+ -- Nicolas Delvaux <contact@nicolas-delvaux.org>  Sat, 04 Dec 2021 17:13:39 +0100
 
 lift (2.5.0-1) unstable; urgency=medium
 
