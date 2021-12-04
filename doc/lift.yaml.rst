@@ -9,12 +9,9 @@ Define a Lift test suite
 
 :Authors: Written an maintained by Nicolas Delvaux <contact@nicolas-delvaux.org>
 :Version: 2.5.0
-:Date: |date|
 :Copyright: GPL2+
 :Manual section: 1
 :Manual group: Lift Manual
-
-.. |date| date::
 
 
 Description
