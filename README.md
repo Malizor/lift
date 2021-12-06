@@ -1,7 +1,7 @@
 Lift Integration-Functional Testing - A meta test framework
 ===========================================================
 
-[![Build Status](https://travis-ci.org/Malizor/lift.svg?branch=master)](https://travis-ci.org/Malizor/lift)
+[![Build Status](https://github.com/Malizor/lift/actions/workflows/main.yml/badge.svg?branch=main)]
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 
