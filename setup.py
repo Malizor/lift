@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # LIFT Integration-Functional Testing - A meta test framework
-# Copyright © 2014-2015 Arkena S.A and Nicolas Delvaux
+# Copyright © 2014-2021 Cognacq-Jay Image and Nicolas Delvaux
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -72,7 +72,7 @@ setup(
     description="High level test framework",
     long_description=LDESC,
     author="Nicolas Delvaux",
-    author_email="nicolas.delvaux@arkena.com",
+    author_email="contact@nicolas-delvaux.org",
     url="https://github.com/Malizor/lift",
     download_url="https://github.com/Malizor/lift/tarball/%s" % lift.version,
     license="GPL2+",
