@@ -1,14 +1,14 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: lift
 Source: https://github.com/Malizor/lift
 
 Files: *
-Copyright: 2014-2016 Nicolas Delvaux <contact@nicolas-delvaux.org>
-           2014-2016 Arkena S.A. <opensource@arkena.com>
+Copyright: 2014-2021 Nicolas Delvaux <contact@nicolas-delvaux.org>
+           2014-2021 Cognacq-Jay Image <opensource@cji.paris>
 License: GPL-2+
 
 Files: debian/*
-Copyright: 2015-2016 Nicolas Delvaux <contact@nicolas-delvaux.org>
+Copyright: 2015-2021 Nicolas Delvaux <contact@nicolas-delvaux.org>
 License: GPL-2+
 
 License: GPL-2+
