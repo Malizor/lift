@@ -55,7 +55,13 @@ a functional test suite for Lift itself), see the `example` folder.
 
 ### Installation
 
-Use `sudo python3 setup.py install`
+Use `sudo python3 setup.py install`  
+
+If you want to build and install the man pages, run:
+```
+sudo rst2man doc/lift.rst /usr/share/man/man1/lift.1
+sudo rst2man doc/lift.yaml.rst /usr/share/man/man1/lift.yaml.1
+```
 
 ##### Dependencies
 

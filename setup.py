@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # LIFT Integration-Functional Testing - A meta test framework
-# Copyright © 2014-2021 Cognacq-Jay Image and Nicolas Delvaux
+# Copyright © 2014-2022 Cognacq-Jay Image and Nicolas Delvaux
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -20,46 +20,9 @@
 
 import os
 import subprocess
-from distutils.command.build import build
-from distutils.command.clean import clean
 from setuptools import setup, find_packages
 
 import lift
-
-
-data_files = []
-MANPAGES_MAPPING = {
-    "doc/lift.1": "doc/lift.rst",
-    "doc/lift.yaml.1": "doc/lift.yaml.rst",
-}
-
-
-class MyBuild(build):
-    """Customized build command - build manpages."""
-
-    def run(self):
-        try:
-            for page in MANPAGES_MAPPING:
-                if not os.path.isfile(page) or os.path.getmtime(
-                    page
-                ) < os.path.getmtime(MANPAGES_MAPPING[page]):
-                    subprocess.call(["rst2man", MANPAGES_MAPPING[page], page])
-                data_files.append(
-                    ("/usr/share/man/man1/", list(MANPAGES_MAPPING.keys()))
-                )
-        except FileNotFoundError:
-            print("Warning: rst2man was not found, skipping the manpage generation.")
-        build.run(self)
-
-
-class MyClean(clean):
-    """Customized clean command - remove built manpages."""
-
-    def run(self):
-        for page in MANPAGES_MAPPING:
-            if os.path.isfile(page):
-                os.remove(page)
-        clean.run(self)
 
 
 LDESC = open(
@@ -79,8 +42,6 @@ setup(
     packages=find_packages(exclude=("tests",)),
     scripts=["bin/lift"],
     test_suite="tests",
-    data_files=data_files,
-    cmdclass={"build": MyBuild, "clean": MyClean},
     setup_requires=["docutils"],
     install_requires=["paramiko", "pyyaml", "junit-xml"],
     classifiers=[
