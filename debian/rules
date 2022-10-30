@@ -1,7 +1,13 @@
 #!/usr/bin/make -f
 
-# Remove leftovers from tests
-export PYBUILD_AFTER_CLEAN=rm -rf "lift.egg-info"
+# Build man pages
+export PYBUILD_AFTER_BUILD=rst2man doc/lift.rst doc/lift.1 && rst2man doc/lift.yaml.rst doc/lift.yaml.1
+
+# Install man pages
+export PYBUILD_AFTER_INSTALL=mkdir -p {destdir}/usr/share/man/man1 && cp doc/*.1 {destdir}/usr/share/man/man1/
+
+# Remove leftovers from tests and man pages
+export PYBUILD_AFTER_CLEAN=rm -rf lift.egg-info doc/*.1
 
 %:
 	dh $@ --with python3 --buildsystem=pybuild
