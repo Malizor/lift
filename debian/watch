@@ -1,4 +1,15 @@
 version=4
 
-opts=pgpsigurlmangle=s/$/.asc/ \
-https://github.com/Malizor/lift/releases .*/lift-(.*)\.tar\.xz
+# GitHub has recently (9/22) changed the behavior of the releases page in a way
+# that breaks watch files [1]. This file works around that by looking for files on
+# the 'tags' page, then rewriting them to reference the expected file on the
+# 'releases' page, and then verifies using the corresponding signature file.
+#
+# [1]: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1019696
+
+# This snippet is inspired by what was done in the Sirikali package.
+
+opts=downloadurlmangle=s/archive\/refs\/tags\/(.*)\.tar\.gz/releases\/download\/$1\/@PACKAGE@-$1\.tar\.xz/,\
+pgpsigurlmangle=s/$/.asc/ \
+https://github.com/Malizor/@PACKAGE@/tags \
+/Malizor/@PACKAGE@/archive/refs/tags/(.*)\.tar\.gz

@@ -1,6 +1,7 @@
 lift (2.6.1-1) UNRELEASED; urgency=medium
 
   * New upstream release (Closes: #1022502)
+  * Update the watch file to fix GitHub support
 
  -- Nicolas Delvaux <contact@nicolas-delvaux.org>  Mon, 31 Oct 2022 16:09:34 +0100
 
