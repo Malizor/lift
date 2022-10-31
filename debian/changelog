@@ -1,11 +1,11 @@
-lift (2.6.1-1) UNRELEASED; urgency=medium
+lift (2.6.1-1) unstable; urgency=medium
 
   * New upstream release (Closes: #1022502)
   * Update the watch file to fix GitHub support
   * Bump standards version to 4.6.1 (no change required)
   * Update the copyright year
 
- -- Nicolas Delvaux <contact@nicolas-delvaux.org>  Mon, 31 Oct 2022 16:09:34 +0100
+ -- Nicolas Delvaux <contact@nicolas-delvaux.org>  Mon, 31 Oct 2022 19:27:00 +0100
 
 lift (2.6.0-1) unstable; urgency=medium
 
