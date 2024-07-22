@@ -174,7 +174,7 @@ class LoadConfigFileTestCase(unittest.TestCase):
         )
 
         self.assertTrue(os.path.isfile(path), "%s does not exist!" % path)
-        with self.assertRaisesRegexp(InvalidDescriptionFile, "Unknown section"):
+        with self.assertRaisesRegex(InvalidDescriptionFile, "Unknown section"):
             load_config_file(path, {}, {}, {})
 
     def test_no_command(self):
@@ -187,7 +187,7 @@ class LoadConfigFileTestCase(unittest.TestCase):
         )
 
         self.assertTrue(os.path.isfile(path), "%s does not exist!" % path)
-        with self.assertRaisesRegexp(InvalidDescriptionFile, "No command defined"):
+        with self.assertRaisesRegex(InvalidDescriptionFile, "No command defined"):
             load_config_file(path, {}, {}, {})
 
     def test_duplicated_test(self):
@@ -200,7 +200,7 @@ class LoadConfigFileTestCase(unittest.TestCase):
         )
 
         self.assertTrue(os.path.isfile(path), "%s does not exist!" % path)
-        with self.assertRaisesRegexp(InvalidDescriptionFile, "Duplicated test"):
+        with self.assertRaisesRegex(InvalidDescriptionFile, "Duplicated test"):
             load_config_file(path, {}, {}, {})
 
     def test_unknown_remote(self):
@@ -213,7 +213,7 @@ class LoadConfigFileTestCase(unittest.TestCase):
         )
 
         self.assertTrue(os.path.isfile(path), "%s does not exist!" % path)
-        with self.assertRaisesRegexp(InvalidDescriptionFile, "Unknown remote"):
+        with self.assertRaisesRegex(InvalidDescriptionFile, "Unknown remote"):
             load_config_file(path, {}, {}, {})
 
     def test_load(self):
