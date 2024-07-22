@@ -30,7 +30,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --statistics
     - name: Check Black formatting
       run: |
-        black --check .
+        black --check . bin/lift
 
   tests:
 
