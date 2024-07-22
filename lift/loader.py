@@ -89,9 +89,9 @@ def remote_to_string(remote):
     if "host" not in remote or "username" not in remote:
         return None
     if "password" in remote:
-        return "%s:%s@%s" % (remote["username"], remote["password"], remote["host"])
+        return f"{remote['username']}:{remote['password']}@{remote['host']}"
     else:
-        return "%s@%s" % (remote["username"], remote["host"])
+        return f"{remote['username']}@{remote['host']}"
 
 
 def load_upper_inheritance(directory_path, preset_remotes):
@@ -123,7 +123,7 @@ def load_upper_inheritance(directory_path, preset_remotes):
                 lift_file, remotes, environment, preset_remotes
             )
         except InvalidDescriptionFile as e:
-            sys.exit("%s is not a valid description file: %s" % (lift_file, e))
+            sys.exit(f"{lift_file} is not a valid description file: {e}")
 
     return remotes, environment
 
@@ -156,25 +156,23 @@ def load_config_file(
                 name = match.group(1)
                 if name in ("test", "define", "complex", "settings"):
                     raise InvalidDescriptionFile(
-                        'Hosts definition: "%s" ' "is a reserved word" % name
+                        f'Hosts definition: "{name}" is a reserved word'
                     )
 
                 remotes[name] = conf["settings"][item]
                 # Does the host definition contain all needed fields?
                 if not remotes[name].get("host", None):
-                    raise InvalidDescriptionFile(
-                        'Missing host in "%s" definition' % name
-                    )
+                    raise InvalidDescriptionFile(f'Missing host in "{name}" definition')
                 if not remotes[name].get("username", None):
                     raise InvalidDescriptionFile(
-                        'Missing username in "%s" definition' % name
+                        f'Missing username in "{name}" definition'
                     )
                 # 'password' is optional, do not look for it
 
             elif item == "environment":
                 environment.update(conf["settings"]["environment"])
             else:
-                raise InvalidDescriptionFile("Unknown section in settings: %s" % item)
+                raise InvalidDescriptionFile(f"Unknown section in settings: {item}")
 
     remotes.update(preset_remotes)  # if a preset remote was overridden
 
@@ -190,16 +188,16 @@ def load_config_file(
             for item in conf[section]:
                 if item not in ("command", "return code", "timeout", "environment"):
                     raise InvalidDescriptionFile(
-                        'Unknown section in "%s": %s' % (section, item)
+                        f'Unknown section in "{section}": {item}'
                     )
 
             test_name = match.group(1)
             for test in tests:
                 if test.name == test_name:
-                    raise InvalidDescriptionFile("Duplicated test: %s" % test_name)
+                    raise InvalidDescriptionFile(f"Duplicated test: {test_name}")
 
             if "command" not in conf[section]:
-                raise InvalidDescriptionFile('No command defined for "%s".' % section)
+                raise InvalidDescriptionFile(f'No command defined for "{section}".')
 
             # Create the test object
             test = LocalTest(
@@ -216,7 +214,7 @@ def load_config_file(
             if remotes_in_env:
                 remotes_env = {}
                 for remote in remotes:
-                    remotes_env["LIFT_REMOTE_%s" % remote] = remote_to_string(
+                    remotes_env[f"LIFT_REMOTE_{remote}"] = remote_to_string(
                         remotes[remote]
                     )
                 test.environment.update(remotes_env)
@@ -231,7 +229,7 @@ def load_config_file(
 
             remote = match.group(1)
             if remote not in remotes:
-                raise InvalidDescriptionFile("Unknown remote: %s" % remote)
+                raise InvalidDescriptionFile(f"Unknown remote: {remote}")
 
             # validate items
             for item in conf[section]:
@@ -243,16 +241,16 @@ def load_config_file(
                     "environment",
                 ):
                     raise InvalidDescriptionFile(
-                        "Unknown section in %s: %s" % (section, item)
+                        f"Unknown section in {section}: {item}"
                     )
 
             test_name = match.group(2)
             for test in tests:
                 if test.name == test_name:
-                    raise InvalidDescriptionFile("Duplicated test: %s" % test_name)
+                    raise InvalidDescriptionFile(f"Duplicated test: {test_name}")
 
             if "command" not in conf[section]:
-                raise InvalidDescriptionFile('No command defined for "%s".' % section)
+                raise InvalidDescriptionFile(f'No command defined for "{section}".')
 
             # Create the test object
             test = RemoteTest(
@@ -271,7 +269,7 @@ def load_config_file(
             if remotes_in_env:
                 remotes_env = {}
                 for remote in remotes:
-                    remotes_env["LIFT_REMOTE_%s" % remote] = remote_to_string(
+                    remotes_env[f"LIFT_REMOTE_{remote}"] = remote_to_string(
                         remotes[remote]
                     )
                 test.environment.update(remotes_env)
@@ -281,6 +279,6 @@ def load_config_file(
             continue
 
         else:
-            raise InvalidDescriptionFile("Unknown section: %s" % section)
+            raise InvalidDescriptionFile(f"Unknown section: {section}")
 
     return tests, remotes, environment

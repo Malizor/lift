@@ -55,7 +55,7 @@ class RemoteTest(BaseTest):
         self.resources = resources
 
         # Internals
-        self._remote_test_folder = "/tmp/lift_test_%s" % self.name
+        self._remote_test_folder = f"/tmp/lift_test_{self.name}"
         self._ssh = paramiko.SSHClient()
         self._channel = None
 
@@ -71,7 +71,7 @@ class RemoteTest(BaseTest):
         self._ssh.get_transport().set_keepalive(1)
 
         ftp = self._ssh.open_sftp()
-        _, out, _ = self._ssh.exec_command("rm -rf %s" % self._remote_test_folder)
+        _, out, _ = self._ssh.exec_command(f"rm -rf {self._remote_test_folder}")
         out.channel.recv_exit_status()  # Wait for completion
         ftp.mkdir(self._remote_test_folder)
 
@@ -99,12 +99,11 @@ class RemoteTest(BaseTest):
                         ftp.chmod(remote_path, os.stat(local_path).st_mode)
             else:
                 raise TestException(
-                    "Could not upload resource - %s: "
-                    "No such file or directory." % resource
+                    f"Could not upload resource - {resource}: No such file or directory."
                 )
 
     def cleanup(self):
-        self._ssh.exec_command("rm -rf %s" % self._remote_test_folder)
+        self._ssh.exec_command(f"rm -rf {self._remote_test_folder}")
         self._ssh.close()
 
     def command_launch(self):
@@ -117,16 +116,14 @@ class RemoteTest(BaseTest):
         try:
             command = self.command
             for key, value in self.environment.items():
-                command = "%s=%s %s" % (key, value, command)
+                command = f"{key}={value} {command}"
             self._channel = self._ssh.get_transport().open_session()
             self._channel.get_pty()
             out_stream = self._channel.makefile()
-            self._channel.exec_command(
-                "cd %s; %s" % (self._remote_test_folder, command)
-            )
+            self._channel.exec_command(f"cd {self._remote_test_folder}; {command}")
             return out_stream
         except Exception as exc:
-            return "Failed to launch command `%s`: %s" % (command, exc)
+            return f"Failed to launch command `{command}`: {exc}"
 
     def wait_command_completion(self):
         return self._channel.recv_exit_status()

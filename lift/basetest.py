@@ -69,7 +69,7 @@ class BaseTest(TestCase):
                 dynamically written. This is typically used to print on
                 sys.stdout or a file. None means 'nowhere'.
         """
-        super().__init__(name, classname="%s/%s" % (directory, name))
+        super().__init__(name, classname=f"{directory}/{name}")
 
         self.name = name
         self.command = command
@@ -101,7 +101,7 @@ class BaseTest(TestCase):
             return super().__getattribute__(name)
 
     def __repr__(self):
-        return "%s<%s>" % (self.__class__.__name__, self.name)
+        return f"{self.__class__.__name__}<{self.name}>"
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
@@ -165,7 +165,7 @@ class BaseTest(TestCase):
         try:
             return self._run()
         except Exception as exc:
-            msg = "An exception was raised during the test execution:\n%s\n" % str(exc)
+            msg = f"An exception was raised during the test execution:\n{exc}\n"
             if self.streaming_output is not None:
                 print(self.streaming_output)
                 self.streaming_output.write(msg)
@@ -183,7 +183,7 @@ class BaseTest(TestCase):
             orig_dir = os.getcwd()
             os.chdir(self.directory)
         except OSError as exc:
-            msg = "\n\n%s: %s\n" % (self.directory, exc)
+            msg = f"\n\n{self.directory}: {exc}\n"
             if self.streaming_output is not None:
                 self.streaming_output.write(msg)
             self._output.write(msg)
@@ -227,7 +227,7 @@ class BaseTest(TestCase):
             out = self.command_launch()
             if isinstance(out, str):
                 # An error occurred
-                msg = "\nAn error occurred: %s" % out
+                msg = f"\nAn error occurred: {out}"
                 if self.streaming_output is not None:
                     self.streaming_output.write(msg)
                     self.streaming_output.flush()
@@ -268,9 +268,8 @@ class BaseTest(TestCase):
         status = self.return_code == self.expected_return_code
 
         if not status:
-            self.failure_message = "Returned %s instead of %s" % (
-                self.return_code,
-                self.expected_return_code,
+            self.failure_message = (
+                f"Returned {self.return_code} instead of {self.expected_return_code}"
             )
         return status
 

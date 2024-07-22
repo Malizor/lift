@@ -65,7 +65,7 @@ sudo rst2man doc/lift.yaml.rst /usr/share/man/man1/lift.yaml.1
 
 ##### Dependencies
 
-* Python 3 (>= 3.5)
+* Python 3 (>= 3.6)
 * python3-yaml
 * python3-paramiko
 * python3-docutils (for man pages)
