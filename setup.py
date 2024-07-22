@@ -34,7 +34,7 @@ setup(
     version=lift.version,
     description="High level test framework",
     long_description=LDESC,
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     author="Nicolas Delvaux",
     author_email="contact@nicolas-delvaux.org",
     url="https://github.com/Malizor/lift",
