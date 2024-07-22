@@ -1,3 +1,8 @@
+Version 2.6.2 Released on 2024/07/22
+
+	* Fix compatibility with Python 3.12
+	* Modernize the code
+
 Version 2.6.1 Released on 2022/10/31
 
 	* Stop building the man pages automatically

@@ -3,12 +3,12 @@ Upstream-Name: lift
 Source: https://github.com/Malizor/lift
 
 Files: *
-Copyright: 2014-2022 Nicolas Delvaux <contact@nicolas-delvaux.org>
-           2014-2022 Cognacq-Jay Image <opensource@cji.paris>
+Copyright: 2014-2024 Nicolas Delvaux <contact@nicolas-delvaux.org>
+           2014-2024 Cognacq-Jay Image <opensource@cji.paris>
 License: GPL-2+
 
 Files: debian/*
-Copyright: 2015-2022 Nicolas Delvaux <contact@nicolas-delvaux.org>
+Copyright: 2015-2024 Nicolas Delvaux <contact@nicolas-delvaux.org>
 License: GPL-2+
 
 License: GPL-2+
