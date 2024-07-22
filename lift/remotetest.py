@@ -42,7 +42,7 @@ class RemoteTest(BaseTest):
         streaming_output=None,
     ):
 
-        super(RemoteTest, self).__init__(
+        super().__init__(
             name,
             command,
             directory,
@@ -85,7 +85,7 @@ class RemoteTest(BaseTest):
                 # Also copy the file mode
                 ftp.chmod(remote_path, os.stat(resource).st_mode)
                 continue
-            elif os.path.isdir(resource):
+            if os.path.isdir(resource):
                 # Upload the whole folder
                 for root, _, files in os.walk(resource):
                     ftp.mkdir(os.path.join(self._remote_test_folder, root))

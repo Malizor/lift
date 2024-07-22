@@ -78,6 +78,7 @@ class BaseTest(TestCase):
         self.timeout = timeout
         self.environment = environment
         self.streaming_output = streaming_output
+        self.failure_message = None
 
         # Test result
         self.finished = False
@@ -97,8 +98,8 @@ class BaseTest(TestCase):
         """
         if name == "stdout":
             return self.output
-        else:
-            return super().__getattribute__(name)
+
+        return super().__getattribute__(name)
 
     def __repr__(self):
         return f"{self.__class__.__name__}<{self.name}>"
@@ -135,7 +136,7 @@ class BaseTest(TestCase):
 
         This implementation does nothing.
         """
-        pass
+        return
 
     def cleanup(self):
         """Do whatever cleanup after the test was ran.
@@ -147,7 +148,7 @@ class BaseTest(TestCase):
 
         This implementation does nothing.
         """
-        pass
+        return
 
     def run(self):
         """Launch and manage the test execution.
@@ -301,4 +302,4 @@ class BaseTest(TestCase):
 
         This implementation does nothing.
         """
-        pass
+        return

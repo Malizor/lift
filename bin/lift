@@ -38,7 +38,7 @@ def parse():
     def is_dir(parser, path):
         """Additional type checker for argparse, validate a directory path"""
         if not os.path.isdir(path):
-            parser.error("%s: no such directory." % path)
+            parser.error(f"{path}: no such directory.")
         else:
             return path
 
@@ -46,7 +46,7 @@ def parse():
         """Additional type checker for argparse, validate a remote string"""
         res = string_to_remote(rstring)
         if res is None:
-            parser.error("%s is not a valid remote string." % rstring)
+            parser.error(f"{rstring} is not a valid remote string.")
         else:
             return res
 
@@ -194,15 +194,14 @@ for directory, _, _ in os.walk(args.folder):
         )
     except InvalidDescriptionFile as e:
         sys.exit(
-            "%s is not a valid description file: %s"
-            % (os.path.join(directory, "lift.yaml"), e)
+            f"{os.path.join(directory, 'lift.yaml')} is not a valid description file: {e}"
         )
 
     mapping.append({"dir": directory, "remotes": remotes, "environment": environment})
     test_suites.append(TestSuite(directory, tests))
 
     for test in tests:
-        test_string = "%s/%s" % (directory, test.name)
+        test_string = f"{directory}/{test.name}"
 
         # Should we ignore this test?
         if args.test_expression:
@@ -210,7 +209,7 @@ for directory, _, _ in os.walk(args.folder):
                 # This is not one of the test the user explicitly asked for
                 test.add_skipped_info("Not selected from the command line.")
                 continue
-            elif args.regex:
+            if args.regex:
                 matched = False
                 for regex in args.test_expression:
                     if re.match(regex, test_string):
@@ -257,16 +256,10 @@ if all_failed_tests:
 for test in all_failed_tests:
     if test.return_code != test.expected_return_code:
         print(
-            "\n%s/%s returned %s instead of %d\n"
-            % (
-                test.directory,
-                test.name,
-                str(test.return_code),
-                test.expected_return_code,
-            )
+            f"\n{test.directory}/{test.name} returned {test.return_code} instead of {test.expected_return_code}\n"
         )
         if args.detailed_summary and test.output:
-            print("The output was:\n%s\n" % test.output)
+            print(f"The output was:\n{test.output}\n")
 
         print("####")
 
@@ -283,4 +276,4 @@ if args.with_xunit:
 if all_failed_tests:
     sys.exit(1)
 else:
-    print("Congratulation! \o/\n")
+    print("Congratulation! 👍\n")

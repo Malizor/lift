@@ -90,8 +90,8 @@ def remote_to_string(remote):
         return None
     if "password" in remote:
         return f"{remote['username']}:{remote['password']}@{remote['host']}"
-    else:
-        return f"{remote['username']}@{remote['host']}"
+
+    return f"{remote['username']}@{remote['host']}"
 
 
 def load_upper_inheritance(directory_path, preset_remotes):
@@ -151,7 +151,7 @@ def load_config_file(
     # load settings
     if "settings" in conf:
         for item in conf["settings"]:
-            match = re.match("^define ([a-zA-Z0-9_\-\.]+)$", item)
+            match = re.match(r"^define ([a-zA-Z0-9_\-\.]+)$", item)
             if match:
                 name = match.group(1)
                 if name in ("test", "define", "complex", "settings"):
@@ -182,7 +182,7 @@ def load_config_file(
             continue
 
         # local test
-        match = re.match("^test ([a-zA-Z0-9_\-\.]+)$", section)
+        match = re.match(r"^test ([a-zA-Z0-9_\-\.]+)$", section)
         if match:
             # validate items
             for item in conf[section]:
@@ -224,7 +224,7 @@ def load_config_file(
             continue
 
         # Remote test
-        match = re.match("^([a-zA-Z0-9_\-\.]+) test ([a-zA-Z0-9_\-\.]+)$", section)
+        match = re.match(r"^([a-zA-Z0-9_\-\.]+) test ([a-zA-Z0-9_\-\.]+)$", section)
         if match:
 
             remote = match.group(1)

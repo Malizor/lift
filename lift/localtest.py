@@ -54,7 +54,7 @@ class LocalTest(BaseTest):
         """
         # This is the same as BaseTest constructor, except for a new internal
         # class variable
-        super(LocalTest, self).__init__(
+        super().__init__(
             name,
             command,
             directory,
@@ -89,8 +89,8 @@ class LocalTest(BaseTest):
         """
         if self._process:
             return self._process.wait()
-        else:
-            return 127  # command not found
+
+        return 127  # command not found
 
     def interrupt_command(self):
         """This function is called when the test is aborted

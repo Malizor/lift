@@ -23,10 +23,6 @@
 class InvalidDescriptionFile(Exception):
     """Issue with the Yaml validity"""
 
-    pass
-
 
 class TestException(Exception):
     """Issue during a test execution"""
-
-    pass
